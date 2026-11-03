@@ -273,7 +273,7 @@ export default function Home() {
 
     try {
       // Ilagay dito ang iyong Make.com Webhook URL
-      const webhookUrl = 'ILAGAY_MO_DITO_YUNG_MAKE_WEBHOOK_URL_MO';
+      const webhookUrl = 'https://hook.us2.make.com/vtffyl9ir78uclry3cdhx1a4ptvdim27';
 
       const response = await fetch(webhookUrl, {
         method: 'POST',

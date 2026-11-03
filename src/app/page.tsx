@@ -260,48 +260,120 @@ export default function Home() {
 
   const monthlySavings = teamSize * hoursSpent * 100 * 22;
 
-  {/* Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-md w-full p-8 shadow-2xl border border-slate-200 relative">
+  // Handle form submission to Make.com Webhook
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    
+    const formData = new FormData(e.currentTarget);
+    const data = {
+      name: formData.get('name'),
+      email: formData.get('email'),
+      submittedAt: new Date().toISOString(),
+    };
+
+    try {
+      // Ilagay dito ang iyong Make.com Webhook URL
+      const webhookUrl = 'ILAGAY_MO_DITO_YUNG_MAKE_WEBHOOK_URL_MO';
+
+      const response = await fetch(webhookUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        alert("Audit Request Sent Successfully! We will contact you shortly.");
+        setIsModalOpen(false);
+      } else {
+        alert("May error sa pag-send. Pakisubukan muli.");
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      alert("Network error. Pakitingnan ang iyong koneksyon.");
+    }
+  };
+
+  return (
+    <main className="min-h-screen bg-slate-50 text-slate-900 selection:bg-blue-900 selection:text-white relative">
+      {/* Header / Navbar */}
+      <header className="sticky top-0 z-40 w-full border-b border-slate-200/80 bg-white/90 backdrop-blur-md">
+        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+          <a href="#" className="flex items-center gap-3">
+            <Image
+              src="/logo.jpg"
+              alt="Kinetix Logo"
+              width={40}
+              height={40}
+              className="rounded-xl object-cover shadow-sm border border-slate-100"
+            />
+            <span className="font-extrabold text-xl tracking-tight text-blue-900 lowercase">kinetix</span>
+          </a>
+
+          <nav className="hidden md:flex items-center gap-8 font-medium text-sm text-slate-600">
+            <a href="#solutions" className="hover:text-blue-900 transition-colors">Solutions</a>
+            <a href="#comparison" className="hover:text-blue-900 transition-colors">Why Automation</a>
+            <a href="#process" className="hover:text-blue-900 transition-colors">How It Works</a>
+            <a href="#calculator" className="hover:text-blue-900 transition-colors">ROI Calculator</a>
+            <a href="#faq" className="hover:text-blue-900 transition-colors">FAQ</a>
+          </nav>
+
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="bg-blue-950 hover:bg-blue-900 text-white font-semibold text-sm px-5 py-2.5 rounded-lg transition-all shadow-md shadow-blue-950/10"
+          >
+            Book Audit
+          </button>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <section className="relative pt-24 pb-20 md:pt-32 md:pb-28 bg-white border-b border-slate-200/60 text-center overflow-hidden">
+        <div className="absolute inset-0 bg-grid-pattern opacity-15 pointer-events-none"></div>
+
+        <div
+          className="absolute inset-0 bg-grid-pattern pointer-events-none transition-all duration-75 ease-out"
+          style={{
+            WebkitMaskImage: `radial-gradient(600px circle at ${mousePos.x}px ${mousePos.y}px, black 0%, rgba(0,0,0,0.4) 50%, transparent 100%)`,
+            maskImage: `radial-gradient(600px circle at ${mousePos.x}px ${mousePos.y}px, black 0%, rgba(0,0,0,0.4) 50%, transparent 100%)`,
+          }}
+        ></div>
+
+        <div className="max-w-4xl mx-auto px-6 relative z-10">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-slate-200 bg-white/90 backdrop-blur-sm text-slate-700 text-xs font-semibold tracking-wide uppercase mb-6 shadow-sm">
+            <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
+            Enterprise AI Architecture & Automation
+          </div>
+
+          <h1 className="text-4xl md:text-6xl font-extrabold text-slate-950 tracking-tight leading-[1.15] mb-6">
+            Eliminate Operational Bottlenecks with <br className="hidden sm:inline" />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-950 via-blue-800 to-blue-600">
+              Smart AI Systems.
+            </span>
+          </h1>
+
+          <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed mb-10">
+            We design custom end-to-end automation pipelines for scaling businesses. Replace hours of tedious manual tasks with instant, automated data execution.
+          </p>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <button
-              onClick={() => setIsModalOpen(false)}
-              className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 font-bold text-lg"
+              onClick={() => setIsModalOpen(true)}
+              className="w-full sm:w-auto bg-blue-950 hover:bg-blue-900 text-white font-semibold px-8 py-4 rounded-xl transition-all shadow-md shadow-blue-950/20"
             >
-              ✕
+              Get Free Workflow Audit
             </button>
-            <h3 className="text-xl font-bold text-slate-950 mb-2">Book a Free Workflow Audit</h3>
-            <p className="text-sm text-slate-600 mb-6">Leave your details and our agency will analyze your business processes.</p>
-            
-            <form onSubmit={handleFormSubmit} className="space-y-4">
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Your Name</label>
-                <input 
-                  type="text" 
-                  name="name" 
-                  required 
-                  placeholder="John Doe" 
-                  className="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-900" 
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Business Email</label>
-                <input 
-                  type="email" 
-                  name="email" 
-                  required 
-                  placeholder="john@company.com" 
-                  className="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-900" 
-                />
-              </div>
-              <button type="submit" className="w-full bg-blue-950 hover:bg-blue-900 text-white font-semibold py-3 rounded-xl text-sm transition-all shadow-md">
-                Submit Audit Request
-              </button>
-            </form>
+            <a
+              href="#solutions"
+              className="w-full sm:w-auto bg-white hover:bg-slate-50 border border-slate-300 text-slate-800 font-semibold px-8 py-4 rounded-xl transition-all shadow-sm"
+            >
+              Explore Solutions
+            </a>
           </div>
         </div>
-      )}
-    
+      </section>
+
       {/* Clean Minimalist Logo Marquee */}
       <section className="py-14 bg-white border-b border-slate-200/60">
         <div className="max-w-7xl mx-auto px-6">
@@ -357,149 +429,143 @@ export default function Home() {
         </div>
       </section>
 
-      {/* UPDATED FULL-STACK SOLUTIONS / SERVICES SECTION */}
-<section id="solutions" className="py-24 bg-slate-50 border-b border-slate-200/60 relative overflow-hidden">
-  <div className="max-w-7xl mx-auto px-6 relative z-10">
-    
-    <div className="text-center max-w-2xl mx-auto mb-16">
-      <span className="inline-block px-3.5 py-1 mb-4 text-xs font-semibold rounded-full border border-slate-200 bg-white text-slate-700 uppercase tracking-wider shadow-sm">
-        Our Capabilities
-      </span>
-      <h2 className="text-3xl md:text-5xl font-extrabold text-slate-950 tracking-tight mb-4">
-        Enterprise Tech & AI Architecture
-      </h2>
-      <p className="text-slate-600 text-base md:text-lg">
-        We build the digital infrastructure your business needs—from full-stack web applications to hands-off AI workflows.
-      </p>
-    </div>
-
-    {/* Bento Grid Layout na Pantay at May Malinaw na Borders */}
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      
-      {/* Service 1: Custom Web Apps & Portals (Spans 2 Columns) */}
-      <div className="md:col-span-2 group relative p-8 md:p-10 rounded-3xl bg-white border border-slate-300 shadow-sm hover:border-blue-900 hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden">
-        <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-br from-blue-100/50 to-transparent rounded-bl-full pointer-events-none transition-transform group-hover:scale-110"></div>
-        <div>
-          <div className="flex items-center justify-between mb-6">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-950 to-blue-900 text-white flex items-center justify-center font-bold text-2xl shadow-lg shadow-blue-950/20 group-hover:scale-105 transition-transform">
-              🌐
-            </div>
-            <span className="text-xs font-bold px-3 py-1 bg-blue-50 text-blue-900 border border-blue-200 rounded-full">
-              Core Infrastructure
-            </span>
-          </div>
-          <h3 className="text-2xl md:text-3xl font-bold text-slate-950 mb-3 tracking-tight">
-            Custom Web Apps & Client Portals
-          </h3>
-          <p className="text-slate-600 text-sm md:text-base leading-relaxed mb-6 max-w-2xl">
-            High-performance, secure web applications engineered with Next.js, Tailwind CSS, and Supabase. Whether you need a customer dashboard, an internal operational management portal, or an e-commerce engine, we construct your complete digital hub.
-          </p>
+      {/* Solutions / Services Section */}
+      <section id="solutions" className="py-24 bg-slate-50 border-b border-slate-200/60 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
           
-          <div className="grid sm:grid-cols-3 gap-3 mb-6 text-xs font-semibold text-slate-700">
-            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center gap-2">
-              <span className="text-blue-600 font-bold">✓</span> Admin & Client Dashboards
-            </div>
-            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center gap-2">
-              <span className="text-blue-600 font-bold">✓</span> Real-Time Database
-            </div>
-            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center gap-2">
-              <span className="text-blue-600 font-bold">✓</span> Fully Scalable Cloud
-            </div>
-          </div>
-        </div>
-
-        <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
-          <span className="text-xs font-bold uppercase tracking-wider text-blue-900">Custom Built Systems</span>
-          <span className="text-slate-400 group-hover:translate-x-1 transition-transform">→</span>
-        </div>
-      </div>
-
-      {/* Service 2: Smart AI Workflow Engines */}
-      <div className="group relative p-8 rounded-3xl bg-white border border-slate-300 shadow-sm hover:border-blue-900 hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-50 to-transparent rounded-bl-full pointer-events-none transition-transform group-hover:scale-110"></div>
-        <div>
-          <div className="flex items-center justify-between mb-6">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-950 to-blue-900 text-white flex items-center justify-center font-bold text-2xl shadow-lg shadow-blue-950/20 group-hover:scale-105 transition-transform">
-              🧠
-            </div>
-            <span className="text-xs font-bold px-3 py-1 bg-purple-50 text-purple-900 border border-purple-200 rounded-full">
-              Workflow Intelligence
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <span className="inline-block px-3.5 py-1 mb-4 text-xs font-semibold rounded-full border border-slate-200 bg-white text-slate-700 uppercase tracking-wider shadow-sm">
+              Our Capabilities
             </span>
+            <h2 className="text-3xl md:text-5xl font-extrabold text-slate-950 tracking-tight mb-4">
+              Enterprise Tech & AI Architecture
+            </h2>
+            <p className="text-slate-600 text-base md:text-lg">
+              We build the digital infrastructure your business needs—from full-stack web applications to hands-off AI workflows.
+            </p>
           </div>
-          <h3 className="text-xl font-bold text-slate-950 mb-3 tracking-tight">
-            Smart AI Workflow Engines
-          </h3>
-          <p className="text-slate-600 text-sm leading-relaxed mb-6">
-            Eliminate repetitive manual tasks. We design custom AI logic using OpenAI and Make.com to process incoming leads, analyze complex invoices, handle support queries, and route data automatically.
-          </p>
-        </div>
-        <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
-          <span className="text-xs font-bold uppercase tracking-wider text-blue-900">10x Speed</span>
-          <span className="text-slate-400 group-hover:translate-x-1 transition-transform">→</span>
-        </div>
-      </div>
 
-      {/* Service 3: API & Ecosystem Pipelines */}
-      <div className="group relative p-8 rounded-3xl bg-white border border-slate-300 shadow-sm hover:border-blue-900 hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-emerald-50 to-transparent rounded-bl-full pointer-events-none transition-transform group-hover:scale-110"></div>
-        <div>
-          <div className="flex items-center justify-between mb-6">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-950 to-blue-900 text-white flex items-center justify-center font-bold text-2xl shadow-lg shadow-blue-950/20 group-hover:scale-105 transition-transform">
-              🔗
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="md:col-span-2 group relative p-8 md:p-10 rounded-3xl bg-white border border-slate-300 shadow-sm hover:border-blue-900 hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden">
+              <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-br from-blue-100/50 to-transparent rounded-bl-full pointer-events-none transition-transform group-hover:scale-110"></div>
+              <div>
+                <div className="flex items-center justify-between mb-6">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-950 to-blue-900 text-white flex items-center justify-center font-bold text-2xl shadow-lg shadow-blue-950/20 group-hover:scale-105 transition-transform">
+                    🌐
+                  </div>
+                  <span className="text-xs font-bold px-3 py-1 bg-blue-50 text-blue-900 border border-blue-200 rounded-full">
+                    Core Infrastructure
+                  </span>
+                </div>
+                <h3 className="text-2xl md:text-3xl font-bold text-slate-950 mb-3 tracking-tight">
+                  Custom Web Apps & Client Portals
+                </h3>
+                <p className="text-slate-600 text-sm md:text-base leading-relaxed mb-6 max-w-2xl">
+                  High-performance, secure web applications engineered with Next.js, Tailwind CSS, and Supabase. Whether you need a customer dashboard, an internal operational management portal, or an e-commerce engine, we construct your complete digital hub.
+                </p>
+                
+                <div className="grid sm:grid-cols-3 gap-3 mb-6 text-xs font-semibold text-slate-700">
+                  <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center gap-2">
+                    <span className="text-blue-600 font-bold">✓</span> Admin & Client Dashboards
+                  </div>
+                  <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center gap-2">
+                    <span className="text-blue-600 font-bold">✓</span> Real-Time Database
+                  </div>
+                  <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center gap-2">
+                    <span className="text-blue-600 font-bold">✓</span> Fully Scalable Cloud
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+                <span className="text-xs font-bold uppercase tracking-wider text-blue-900">Custom Built Systems</span>
+                <span className="text-slate-400 group-hover:translate-x-1 transition-transform">→</span>
+              </div>
             </div>
-            <span className="text-xs font-bold px-3 py-1 bg-emerald-50 text-emerald-900 border border-emerald-200 rounded-full">
-              Connectivity
-            </span>
-          </div>
-          <h3 className="text-xl font-bold text-slate-950 mb-3 tracking-tight">
-            API & Ecosystem Pipelines
-          </h3>
-          <p className="text-slate-600 text-sm leading-relaxed mb-6">
-            Connect your existing software stack without friction. We bridge Google Workspace, Meta Messenger, CRMs, payment gateways, and custom databases via secure Webhooks and official APIs.
-          </p>
-        </div>
-        <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
-          <span className="text-xs font-bold uppercase tracking-wider text-blue-900">Zero Data Silos</span>
-          <span className="text-slate-400 group-hover:translate-x-1 transition-transform">→</span>
-        </div>
-      </div>
 
-      {/* Service 4: Bespoke Enterprise Systems & More (Spans 2 Columns) */}
-      <div className="md:col-span-2 group relative p-8 md:p-10 rounded-3xl bg-white border border-slate-300 shadow-sm hover:border-blue-900 hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden">
-        <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-br from-amber-50 to-transparent rounded-bl-full pointer-events-none transition-transform group-hover:scale-110"></div>
-        <div>
-          <div className="flex items-center justify-between mb-6">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-950 to-blue-900 text-white flex items-center justify-center font-bold text-2xl shadow-lg shadow-blue-950/20 group-hover:scale-105 transition-transform">
-              ⚙️
+            <div className="group relative p-8 rounded-3xl bg-white border border-slate-300 shadow-sm hover:border-blue-900 hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-50 to-transparent rounded-bl-full pointer-events-none transition-transform group-hover:scale-110"></div>
+              <div>
+                <div className="flex items-center justify-between mb-6">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-950 to-blue-900 text-white flex items-center justify-center font-bold text-2xl shadow-lg shadow-blue-950/20 group-hover:scale-105 transition-transform">
+                    🧠
+                  </div>
+                  <span className="text-xs font-bold px-3 py-1 bg-purple-50 text-purple-900 border border-purple-200 rounded-full">
+                    Workflow Intelligence
+                  </span>
+                </div>
+                <h3 className="text-xl font-bold text-slate-950 mb-3 tracking-tight">
+                  Smart AI Workflow Engines
+                </h3>
+                <p className="text-slate-600 text-sm leading-relaxed mb-6">
+                  Eliminate repetitive manual tasks. We design custom AI logic using OpenAI and Make.com to process incoming leads, analyze complex invoices, handle support queries, and route data automatically.
+                </p>
+              </div>
+              <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+                <span className="text-xs font-bold uppercase tracking-wider text-blue-900">10x Speed</span>
+                <span className="text-slate-400 group-hover:translate-x-1 transition-transform">→</span>
+              </div>
             </div>
-            <span className="text-xs font-bold px-3 py-1 bg-amber-50 text-amber-900 border border-amber-200 rounded-full">
-              End-to-End Delivery
-            </span>
-          </div>
-          <h3 className="text-2xl md:text-3xl font-bold text-slate-950 mb-3 tracking-tight">
-            Bespoke Enterprise Systems & More
-          </h3>
-          <p className="text-slate-600 text-sm md:text-base leading-relaxed mb-6 max-w-2xl">
-            Need a completely tailored technical solution? From custom AI agent tools and automated CRM suites to full operational migrations—we design, build, deploy, and maintain bespoke software systems engineered specifically around your business model.
-          </p>
 
-          <div className="flex flex-wrap gap-2 text-xs font-semibold text-slate-700 mb-6">
-            <span className="px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200">Custom AI Agents</span>
-            <span className="px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200">Order Management</span>
-            <span className="px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200">Automated Dashboards</span>
-            <span className="px-3.5 py-2 rounded-xl bg-blue-950 text-white font-bold">And More...</span>
+            <div className="group relative p-8 rounded-3xl bg-white border border-slate-300 shadow-sm hover:border-blue-900 hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-emerald-50 to-transparent rounded-bl-full pointer-events-none transition-transform group-hover:scale-110"></div>
+              <div>
+                <div className="flex items-center justify-between mb-6">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-950 to-blue-900 text-white flex items-center justify-center font-bold text-2xl shadow-lg shadow-blue-950/20 group-hover:scale-105 transition-transform">
+                    🔗
+                  </div>
+                  <span className="text-xs font-bold px-3 py-1 bg-emerald-50 text-emerald-900 border border-emerald-200 rounded-full">
+                    Connectivity
+                  </span>
+                </div>
+                <h3 className="text-xl font-bold text-slate-950 mb-3 tracking-tight">
+                  API & Ecosystem Pipelines
+                </h3>
+                <p className="text-slate-600 text-sm leading-relaxed mb-6">
+                  Connect your existing software stack without friction. We bridge Google Workspace, Meta Messenger, CRMs, payment gateways, and custom databases via secure Webhooks and official APIs.
+                </p>
+              </div>
+              <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+                <span className="text-xs font-bold uppercase tracking-wider text-blue-900">Zero Data Silos</span>
+                <span className="text-slate-400 group-hover:translate-x-1 transition-transform">→</span>
+              </div>
+            </div>
+
+            <div className="md:col-span-2 group relative p-8 md:p-10 rounded-3xl bg-white border border-slate-300 shadow-sm hover:border-blue-900 hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden">
+              <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-br from-amber-50 to-transparent rounded-bl-full pointer-events-none transition-transform group-hover:scale-110"></div>
+              <div>
+                <div className="flex items-center justify-between mb-6">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-950 to-blue-900 text-white flex items-center justify-center font-bold text-2xl shadow-lg shadow-blue-950/20 group-hover:scale-105 transition-transform">
+                    ⚙️
+                  </div>
+                  <span className="text-xs font-bold px-3 py-1 bg-amber-50 text-amber-900 border border-amber-200 rounded-full">
+                    End-to-End Delivery
+                  </span>
+                </div>
+                <h3 className="text-2xl md:text-3xl font-bold text-slate-950 mb-3 tracking-tight">
+                  Bespoke Enterprise Systems & More
+                </h3>
+                <p className="text-slate-600 text-sm md:text-base leading-relaxed mb-6 max-w-2xl">
+                  Need a completely tailored technical solution? From custom AI agent tools and automated CRM suites to full operational migrations—we design, build, deploy, and maintain bespoke software systems engineered specifically around your business model.
+                </p>
+
+                <div className="flex flex-wrap gap-2 text-xs font-semibold text-slate-700 mb-6">
+                  <span className="px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200">Custom AI Agents</span>
+                  <span className="px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200">Order Management</span>
+                  <span className="px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200">Automated Dashboards</span>
+                  <span className="px-3.5 py-2 rounded-xl bg-blue-950 text-white font-bold">And More...</span>
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+                <span className="text-xs font-bold uppercase tracking-wider text-blue-900">Tailored Solutions</span>
+                <span className="text-slate-400 group-hover:translate-x-1 transition-transform">→</span>
+              </div>
+            </div>
+
           </div>
         </div>
-
-        <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
-          <span className="text-xs font-bold uppercase tracking-wider text-blue-900">Tailored Solutions</span>
-          <span className="text-slate-400 group-hover:translate-x-1 transition-transform">→</span>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
+      </section>
 
       {/* Why Kinetix / Comparison Section */}
       <section id="comparison" className="py-24 bg-slate-50 border-b border-slate-200/60 relative overflow-hidden">
@@ -654,7 +720,7 @@ export default function Home() {
         </div>
       </footer>
 
-      {/* Modal */}
+      {/* Modal / Booking Form */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl max-w-md w-full p-8 shadow-2xl border border-slate-200 relative">
@@ -666,14 +732,27 @@ export default function Home() {
             </button>
             <h3 className="text-xl font-bold text-slate-950 mb-2">Book a Free Workflow Audit</h3>
             <p className="text-sm text-slate-600 mb-6">Leave your details and our agency will analyze your business processes.</p>
+            
             <form onSubmit={handleFormSubmit} className="space-y-4">
               <div>
                 <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Your Name</label>
-                <input type="text" required placeholder="John Doe" className="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-900" />
+                <input 
+                  type="text" 
+                  name="name" 
+                  required 
+                  placeholder="John Doe" 
+                  className="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-900" 
+                />
               </div>
               <div>
                 <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Business Email</label>
-                <input type="email" required placeholder="john@company.com" className="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-900" />
+                <input 
+                  type="email" 
+                  name="email" 
+                  required 
+                  placeholder="john@company.com" 
+                  className="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-900" 
+                />
               </div>
               <button type="submit" className="w-full bg-blue-950 hover:bg-blue-900 text-white font-semibold py-3 rounded-xl text-sm transition-all shadow-md">
                 Submit Audit Request

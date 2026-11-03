@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 
-// Sticky Scrollytelling Component para sa 4-Step Engineering Process
+// Sticky Scrollytelling & Mobile-Responsive Process Component
 function ProcessScrollytelling() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeStep, setActiveStep] = useState<number>(0);
@@ -65,10 +65,10 @@ function ProcessScrollytelling() {
     <section 
       ref={containerRef} 
       id="process" 
-      className="relative h-[300vh] bg-gradient-to-b from-slate-50 via-blue-50/50 to-slate-100 border-b border-slate-200/60"
+      className="relative md:h-[300vh] bg-gradient-to-b from-slate-50 via-blue-50/50 to-slate-100 border-b border-slate-200/60 py-20 md:py-0"
     >
-      {/* Sticky Viewport Container */}
-      <div className="sticky top-0 h-screen flex flex-col justify-center max-w-7xl mx-auto px-6 overflow-hidden">
+      {/* Desktop Sticky Viewport / Mobile Normal Flow */}
+      <div className="md:sticky md:top-0 md:h-screen flex flex-col justify-center max-w-7xl mx-auto px-6 overflow-hidden">
         
         <div className="text-center max-w-2xl mx-auto mb-12">
           <span className="inline-block px-3.5 py-1 mb-3 text-xs font-semibold rounded-full border border-slate-200 bg-white text-slate-700 uppercase tracking-wider shadow-sm">
@@ -78,12 +78,12 @@ function ProcessScrollytelling() {
             Our 4-Step Engineering Process
           </h2>
           <p className="text-slate-600 text-sm md:text-base">
-            Scroll down to walk through our step-by-step automation deployment.
+            How we transition your business from manual bottlenecks to automated architecture.
           </p>
         </div>
 
-        {/* 4 Cards Grid */}
-        <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6 relative z-10">
+        {/* Cards Grid: Stacked vertical sa mobile (flexcol), 4-columns grid sa desktop (md:grid-cols-4) */}
+        <div className="flex flex-col md:grid md:grid-cols-4 gap-6 relative z-10">
           {steps.map((step, index) => {
             const isActive = activeStep === index;
             const isPassed = activeStep > index;
@@ -91,62 +91,42 @@ function ProcessScrollytelling() {
             return (
               <div
                 key={index}
-                className={`relative p-8 rounded-3xl border transition-all duration-500 ease-out flex flex-col justify-between ${
+                className={`relative p-6 md:p-8 rounded-3xl border transition-all duration-500 ease-out flex flex-col justify-between ${
                   isActive
-                    ? 'bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 text-white border-blue-500 shadow-2xl shadow-blue-950/30 scale-105 -translate-y-2 ring-2 ring-blue-500/40'
-                    : isPassed
-                    ? 'bg-white/90 backdrop-blur-sm text-slate-900 border-blue-300 shadow-md'
-                    : 'bg-white/50 backdrop-blur-xs text-slate-400 border-slate-200 opacity-60'
+                    ? 'bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 text-white border-blue-500 shadow-2xl shadow-blue-950/30 md:scale-105 md:-translate-y-2 ring-2 ring-blue-500/40'
+                    : 'bg-white text-slate-900 border-slate-300 shadow-sm md:bg-white/50 md:opacity-70'
                 }`}
               >
                 <div>
                   <div className="flex items-center justify-between mb-6">
                     <span
-                      className={`text-3xl font-black px-3.5 py-1 rounded-2xl border transition-colors duration-500 ${
+                      className={`text-2xl md:text-3xl font-black px-3.5 py-1 rounded-2xl border transition-colors duration-500 ${
                         isActive
                           ? 'bg-blue-600 text-white border-blue-400 shadow-md shadow-blue-600/40'
-                          : isPassed
-                          ? 'bg-blue-50 text-blue-950 border-blue-200'
-                          : 'bg-slate-100 text-slate-400 border-slate-200'
+                          : 'bg-blue-50 text-blue-950 border-blue-200'
                       }`}
                     >
                       {step.number}
                     </span>
                     <span
                       className={`w-3 h-3 rounded-full transition-all duration-500 ${
-                        isActive
-                          ? 'bg-blue-400 animate-ping'
-                          : isPassed
-                          ? 'bg-blue-600'
-                          : 'bg-slate-300'
+                        isActive ? 'bg-blue-400 animate-ping' : 'bg-blue-600'
                       }`}
                     ></span>
                   </div>
 
-                  <h3
-                    className={`text-xl font-bold mb-3 tracking-tight transition-colors ${
-                      isActive ? 'text-white' : 'text-slate-950'
-                    }`}
-                  >
+                  <h3 className="text-xl font-bold mb-3 tracking-tight">
                     {step.title}
                   </h3>
                   
-                  <p
-                    className={`text-sm leading-relaxed transition-colors ${
-                      isActive ? 'text-slate-200' : 'text-slate-600'
-                    }`}
-                  >
+                  <p className={`text-sm leading-relaxed ${isActive ? 'text-slate-200' : 'text-slate-600'}`}>
                     {step.description}
                   </p>
                 </div>
 
-                <div
-                  className={`mt-6 pt-4 border-t flex items-center justify-between text-xs font-semibold ${
-                    isActive
-                      ? 'border-blue-900/60 text-blue-300'
-                      : 'border-slate-100 text-slate-500'
-                  }`}
-                >
+                <div className={`mt-6 pt-4 border-t flex items-center justify-between text-xs font-semibold ${
+                  isActive ? 'border-blue-900/60 text-blue-300' : 'border-slate-100 text-slate-500'
+                }`}>
                   <span>{step.phase}</span>
                   <span>{isActive ? 'Active Phase' : step.detail}</span>
                 </div>
@@ -155,8 +135,8 @@ function ProcessScrollytelling() {
           })}
         </div>
 
-        {/* Progress Bar */}
-        <div className="mt-12 max-w-md mx-auto w-full bg-slate-200/80 backdrop-blur-sm h-1.5 rounded-full overflow-hidden shadow-inner">
+        {/* Progress Bar (Desktop only) */}
+        <div className="hidden md:block mt-12 max-w-md mx-auto w-full bg-slate-200/80 backdrop-blur-sm h-1.5 rounded-full overflow-hidden shadow-inner">
           <div
             className="bg-gradient-to-r from-blue-600 to-blue-950 h-full transition-all duration-300 ease-out"
             style={{ width: `${((activeStep + 1) / 4) * 100}%` }}

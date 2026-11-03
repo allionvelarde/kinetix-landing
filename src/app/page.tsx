@@ -247,6 +247,8 @@ export default function Home() {
   const [teamSize, setTeamSize] = useState<number>(3);
   const [hoursSpent, setHoursSpent] = useState<number>(4);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [selectedService, setSelectedService] = useState<string>("Custom Web Apps & Client Portals");
+  const [customService, setCustomService] = useState<string>("");
 
   const [mousePos, setMousePos] = useState({ x: -1000, y: -1000 });
 
@@ -260,19 +262,22 @@ export default function Home() {
 
   const monthlySavings = teamSize * hoursSpent * 100 * 22;
 
-  // Handle form submission to Make.com Webhook
+  // Handle form submission to Make.com Webhook with Dropdown and Concerns
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
     const formData = new FormData(e.currentTarget);
+    const finalService = selectedService === "Custom Service" ? customService : selectedService;
+
     const data = {
       name: formData.get('name'),
       email: formData.get('email'),
+      service: finalService,
+      concernsAndVision: formData.get('concernsAndVision'),
       submittedAt: new Date().toISOString(),
     };
 
     try {
-      // Ilagay dito ang iyong Make.com Webhook URL
       const webhookUrl = 'https://hook.us2.make.com/vtffyl9ir78uclry3cdhx1a4ptvdim27';
 
       const response = await fetch(webhookUrl, {
@@ -722,8 +727,8 @@ export default function Home() {
 
       {/* Modal / Booking Form */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-md w-full p-8 shadow-2xl border border-slate-200 relative">
+        <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-2xl max-w-lg w-full p-8 shadow-2xl border border-slate-200 relative my-8">
             <button
               onClick={() => setIsModalOpen(false)}
               className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 font-bold text-lg"
@@ -744,6 +749,7 @@ export default function Home() {
                   className="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-900" 
                 />
               </div>
+
               <div>
                 <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Business Email</label>
                 <input 
@@ -754,8 +760,52 @@ export default function Home() {
                   className="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-900" 
                 />
               </div>
-              <button type="submit" className="w-full bg-blue-950 hover:bg-blue-900 text-white font-semibold py-3 rounded-xl text-sm transition-all shadow-md">
-                Submit Audit Request
+
+              {/* Added Services Dropdown */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Service Needed</label>
+                <select
+                  value={selectedService}
+                  onChange={(e) => setSelectedService(e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-900 bg-white"
+                >
+                  <option value="Custom Web Apps & Client Portals">Custom Web Apps & Client Portals</option>
+                  <option value="Smart AI Workflow Engines">Smart AI Workflow Engines</option>
+                  <option value="API & Ecosystem Pipelines">API & Ecosystem Pipelines</option>
+                  <option value="Bespoke Enterprise Systems">Bespoke Enterprise Systems</option>
+                  <option value="Custom Service">Custom Service / Specific Workflow Request</option>
+                </select>
+              </div>
+
+              {/* Conditional Custom Service Input */}
+              {selectedService === "Custom Service" && (
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Specify Custom Service</label>
+                  <input 
+                    type="text" 
+                    value={customService}
+                    onChange={(e) => setCustomService(e.target.value)}
+                    required 
+                    placeholder="e.g. Automated PDF Generator + WhatsApp Notification" 
+                    className="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-900" 
+                  />
+                </div>
+              )}
+
+              {/* Added Project Vision / Concerns Textarea */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Project Vision & Current Bottlenecks</label>
+                <textarea 
+                  name="concernsAndVision" 
+                  rows={3}
+                  required 
+                  placeholder="Describe your current manual process, goals, or concerns..." 
+                  className="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-900 resize-none" 
+                />
+              </div>
+
+              <button type="submit" className="w-full bg-blue-950 hover:bg-blue-900 text-white font-semibold py-3.5 rounded-xl text-sm transition-all shadow-md">
+                Submit Detailed Audit Request
               </button>
             </form>
           </div>

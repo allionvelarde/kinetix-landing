@@ -67,7 +67,7 @@ function ProcessScrollytelling() {
       id="process" 
       className="relative h-[300vh] bg-gradient-to-b from-slate-50 via-blue-50/50 to-slate-100 border-b border-slate-200/60"
     >
-      {/* Sticky Viewport Container - Dito naka-lock ang scroll habang nagba-baba */}
+      {/* Sticky Viewport Container */}
       <div className="sticky top-0 h-screen flex flex-col justify-center max-w-7xl mx-auto px-6 overflow-hidden">
         
         <div className="text-center max-w-2xl mx-auto mb-12">
@@ -82,7 +82,7 @@ function ProcessScrollytelling() {
           </p>
         </div>
 
-        {/* 4 Cards Grid with Scrollytelling Highlights & Gradient Card BG */}
+        {/* 4 Cards Grid */}
         <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6 relative z-10">
           {steps.map((step, index) => {
             const isActive = activeStep === index;
@@ -155,7 +155,7 @@ function ProcessScrollytelling() {
           })}
         </div>
 
-        {/* Progress Bar Indicator sa ibaba */}
+        {/* Progress Bar */}
         <div className="mt-12 max-w-md mx-auto w-full bg-slate-200/80 backdrop-blur-sm h-1.5 rounded-full overflow-hidden shadow-inner">
           <div
             className="bg-gradient-to-r from-blue-600 to-blue-950 h-full transition-all duration-300 ease-out"
@@ -170,7 +170,7 @@ function ProcessScrollytelling() {
 
 // Interactive Accordion FAQ Component
 function FAQSection() {
-  const [openIndex, setOpenIndex] = useState<number | null>(0); // Naka-open ang 1st item by default
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   const faqs = [
     {
@@ -233,7 +233,6 @@ function FAQSection() {
                     {faq.question}
                   </span>
                   
-                  {/* Plus / Chevron Animation Icon */}
                   <span
                     className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shrink-0 transition-transform duration-300 ${
                       isOpen
@@ -245,7 +244,6 @@ function FAQSection() {
                   </span>
                 </button>
 
-                {/* Animated Dropdown Content */}
                 <div
                   className={`transition-all duration-300 ease-in-out overflow-hidden ${
                     isOpen ? 'max-h-96 opacity-100 px-6 pb-7 md:px-7' : 'max-h-0 opacity-0 px-6 pb-0'
@@ -270,7 +268,6 @@ export default function Home() {
   const [hoursSpent, setHoursSpent] = useState<number>(4);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-  // Mouse position state para sa Interactive Grid Spotlight
   const [mousePos, setMousePos] = useState({ x: -1000, y: -1000 });
 
   useEffect(() => {
@@ -322,13 +319,10 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Hero Section na may Malaking Mouse-Tracking Grid Spotlight */}
+      {/* Hero Section */}
       <section className="relative pt-24 pb-20 md:pt-32 md:pb-28 bg-white border-b border-slate-200/60 text-center overflow-hidden">
-        
-        {/* Layer 1: Subtle base background grid */}
         <div className="absolute inset-0 bg-grid-pattern opacity-15 pointer-events-none"></div>
 
-        {/* Layer 2: Interactive Spotlight — Malaking 600px Circle Mask */}
         <div
           className="absolute inset-0 bg-grid-pattern pointer-events-none transition-all duration-75 ease-out"
           style={{
@@ -371,70 +365,18 @@ export default function Home() {
         </div>
       </section>
     
-      {/* Clean Minimalist Logo Marquee na may Side Fade at Grid Margin */}
+      {/* Clean Minimalist Logo Marquee */}
       <section className="py-14 bg-white border-b border-slate-200/60">
         <div className="max-w-7xl mx-auto px-6">
-          
           <div className="text-center mb-8">
             <p className="text-xs font-bold uppercase tracking-widest text-slate-400">Integrated with Enterprise Infrastructure</p>
           </div>
           
-          {/* Container Wrapper na may Side Fade Overlay */}
           <div className="relative w-full overflow-hidden">
-            
-            {/* Left & Right Gradient Fade Masks */}
             <div className="pointer-events-none absolute left-0 top-0 bottom-0 z-10 w-24 bg-gradient-to-r from-white to-transparent"></div>
             <div className="pointer-events-none absolute right-0 top-0 bottom-0 z-10 w-24 bg-gradient-to-l from-white to-transparent"></div>
 
-            {/* Marquee Track */}
             <div className="animate-marquee flex items-center gap-16 md:gap-24 grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
-              
-              {/* OpenAI Logo */}
-              <div className="flex items-center gap-3 shrink-0">
-                <svg className="w-8 h-8 fill-slate-900" viewBox="0 0 24 24">
-                  <path d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0905 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.259 23a6.0557 6.0557 0 0 0 5.772-4.2057 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7468-6.0732z"/>
-                </svg>
-                <span className="font-extrabold text-2xl tracking-tight text-slate-900">OpenAI</span>
-              </div>
-
-              {/* Supabase Logo */}
-              <div className="flex items-center gap-3 shrink-0">
-                <svg className="w-8 h-8 fill-emerald-600" viewBox="0 0 24 24">
-                  <path d="M21.362 9.354H12V.326a.326.326 0 00-.555-.23L.638 10.9a.326.326 0 00.23.555H12v9.028a.326.326 0 00.555.23l10.807-10.803a.326.326 0 00-.23-.556z"/>
-                </svg>
-                <span className="font-extrabold text-2xl tracking-tight text-slate-900">supabase</span>
-              </div>
-
-              {/* Make Logo */}
-              <div className="flex items-center gap-3 shrink-0">
-                <svg className="w-8 h-8 fill-purple-600" viewBox="0 0 24 24">
-                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-                </svg>
-                <span className="font-extrabold text-2xl tracking-tight text-slate-900">make</span>
-              </div>
-
-              {/* Anthropic Logo */}
-              <div className="flex items-center gap-3 shrink-0">
-                <span className="font-serif font-black text-3xl tracking-tighter text-slate-900">ANTHROPIC</span>
-              </div>
-
-              {/* Google Workspace Logo */}
-              <div className="flex items-center gap-3 shrink-0">
-                <svg className="w-8 h-8 fill-blue-600" viewBox="0 0 24 24">
-                  <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/>
-                </svg>
-                <span className="font-bold text-2xl tracking-tight text-slate-900">Google Workspace</span>
-              </div>
-
-              {/* Webhooks Logo */}
-              <div className="flex items-center gap-3 shrink-0">
-                <svg className="w-8 h-8 stroke-blue-700" fill="none" viewBox="0 0 24 24" strokeWidth="2.5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                </svg>
-                <span className="font-extrabold text-2xl tracking-tight text-slate-900">webhooks</span>
-              </div>
-
-              {/* DUPLICATE SET FOR INFINITE LOOP */}
               <div className="flex items-center gap-3 shrink-0">
                 <svg className="w-8 h-8 fill-slate-900" viewBox="0 0 24 24">
                   <path d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0905 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.259 23a6.0557 6.0557 0 0 0 5.772-4.2057 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7468-6.0732z"/>
@@ -473,81 +415,147 @@ export default function Home() {
                 </svg>
                 <span className="font-extrabold text-2xl tracking-tight text-slate-900">webhooks</span>
               </div>
-
             </div>
           </div>
-
         </div>
       </section>
 
-      {/* Solutions Section na laging may malinis na border */}
+      {/* UPDATED FULL-STACK SOLUTIONS / SERVICES SECTION */}
       <section id="solutions" className="py-24 bg-slate-50 border-b border-slate-200/60 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           
           <div className="text-center max-w-2xl mx-auto mb-16">
             <span className="inline-block px-3.5 py-1 mb-4 text-xs font-semibold rounded-full border border-slate-200 bg-white text-slate-700 uppercase tracking-wider shadow-sm">
-              Core Architecture
+              Our Capabilities
             </span>
             <h2 className="text-3xl md:text-5xl font-extrabold text-slate-950 tracking-tight mb-4">
-              Core Systems We Architect
+              Enterprise Tech & AI Architecture
             </h2>
             <p className="text-slate-600 text-base md:text-lg">
-              Custom-tailored pipelines built to handle repetitive workload so your team can focus on growth.
+              We build the digital infrastructure your business needs—from full-stack web applications to hands-off AI workflows.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          {/* Bento Grid Layout */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             
-            {/* Card 1 */}
-            <div className="group relative p-8 rounded-3xl bg-white border border-slate-200 shadow-sm hover:border-blue-900 hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-50 to-transparent rounded-bl-full pointer-events-none transition-transform group-hover:scale-110"></div>
+            {/* Service 1: Custom Web Apps & Portals (Featured - Spans 2 Columns) */}
+            <div className="md:col-span-2 group relative p-8 md:p-10 rounded-3xl bg-white border border-slate-200 shadow-sm hover:border-blue-900 hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden">
+              <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-br from-blue-100/50 to-transparent rounded-bl-full pointer-events-none transition-transform group-hover:scale-110"></div>
               <div>
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-950 to-blue-900 text-white flex items-center justify-center font-bold text-2xl mb-8 shadow-lg shadow-blue-950/20 group-hover:scale-105 transition-transform">
-                  ⚡
+                <div className="flex items-center justify-between mb-8">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-950 to-blue-900 text-white flex items-center justify-center font-bold text-2xl shadow-lg shadow-blue-950/20 group-hover:scale-105 transition-transform">
+                    🌐
+                  </div>
+                  <span className="text-xs font-bold px-3 py-1 bg-blue-50 text-blue-900 border border-blue-200 rounded-full">
+                    Core Infrastructure
+                  </span>
                 </div>
-                <h3 className="text-2xl font-bold text-slate-950 mb-4 tracking-tight">AI Lead Qualification</h3>
-                <p className="text-slate-600 text-sm md:text-base leading-relaxed mb-8">
-                  Instantly capture, score, and route leads from Messenger, Instagram, or Forms directly to your CRM/Database 24/7 without delays.
+                <h3 className="text-2xl md:text-3xl font-bold text-slate-950 mb-4 tracking-tight">
+                  Custom Web Apps & Client Portals
+                </h3>
+                <p className="text-slate-600 text-sm md:text-base leading-relaxed mb-8 max-w-2xl">
+                  High-performance, secure web applications engineered with Next.js, Tailwind CSS, and Supabase. Whether you need a customer dashboard, an internal operational management portal, or an e-commerce engine, we construct your complete digital hub.
                 </p>
+                
+                <div className="grid sm:grid-cols-3 gap-4 mb-8 text-xs font-semibold text-slate-700">
+                  <div className="p-3 bg-slate-50 rounded-xl border border-slate-100 flex items-center gap-2">
+                    <span className="text-blue-600 font-bold">✓</span> Admin & Client Dashboards
+                  </div>
+                  <div className="p-3 bg-slate-50 rounded-xl border border-slate-100 flex items-center gap-2">
+                    <span className="text-blue-600 font-bold">✓</span> Real-Time Database Architecture
+                  </div>
+                  <div className="p-3 bg-slate-50 rounded-xl border border-slate-100 flex items-center gap-2">
+                    <span className="text-blue-600 font-bold">✓</span> Fully Scalable & Cloud-Hosted
+                  </div>
+                </div>
               </div>
+
               <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-wider text-blue-900">Zero Missed Opps</span>
+                <span className="text-xs font-bold uppercase tracking-wider text-blue-900">Custom Built Systems</span>
                 <span className="text-slate-400 group-hover:translate-x-1 transition-transform">→</span>
               </div>
             </div>
 
-            {/* Card 2 */}
+            {/* Service 2: Smart AI Workflow Engines */}
             <div className="group relative p-8 rounded-3xl bg-white border border-slate-200 shadow-sm hover:border-blue-900 hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-50 to-transparent rounded-bl-full pointer-events-none transition-transform group-hover:scale-110"></div>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-50 to-transparent rounded-bl-full pointer-events-none transition-transform group-hover:scale-110"></div>
               <div>
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-950 to-blue-900 text-white flex items-center justify-center font-bold text-2xl mb-8 shadow-lg shadow-blue-950/20 group-hover:scale-105 transition-transform">
-                  📄
+                <div className="flex items-center justify-between mb-8">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-950 to-blue-900 text-white flex items-center justify-center font-bold text-2xl shadow-lg shadow-blue-950/20 group-hover:scale-105 transition-transform">
+                    🧠
+                  </div>
+                  <span className="text-xs font-bold px-3 py-1 bg-purple-50 text-purple-900 border border-purple-200 rounded-full">
+                    Workflow Intelligence
+                  </span>
                 </div>
-                <h3 className="text-2xl font-bold text-slate-950 mb-4 tracking-tight">Intelligent Document Processing</h3>
+                <h3 className="text-2xl font-bold text-slate-950 mb-4 tracking-tight">
+                  Smart AI Workflow Engines
+                </h3>
                 <p className="text-slate-600 text-sm md:text-base leading-relaxed mb-8">
-                  Extract line items, figures, vendor info, and receipts from PDFs directly into organized databases automatically.
+                  Eliminate repetitive manual tasks. We design custom AI logic using OpenAI and Make.com to process incoming leads, analyze complex invoices, handle support queries, and route data automatically.
                 </p>
               </div>
               <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-wider text-blue-900">100% Accuracy</span>
+                <span className="text-xs font-bold uppercase tracking-wider text-blue-900">10x Operational Speed</span>
                 <span className="text-slate-400 group-hover:translate-x-1 transition-transform">→</span>
               </div>
             </div>
 
-            {/* Card 3 */}
+            {/* Service 3: API & Ecosystem Pipelines */}
             <div className="group relative p-8 rounded-3xl bg-white border border-slate-200 shadow-sm hover:border-blue-900 hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-50 to-transparent rounded-bl-full pointer-events-none transition-transform group-hover:scale-110"></div>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-emerald-50 to-transparent rounded-bl-full pointer-events-none transition-transform group-hover:scale-110"></div>
               <div>
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-950 to-blue-900 text-white flex items-center justify-center font-bold text-2xl mb-8 shadow-lg shadow-blue-950/20 group-hover:scale-105 transition-transform">
-                  🔄
+                <div className="flex items-center justify-between mb-8">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-950 to-blue-900 text-white flex items-center justify-center font-bold text-2xl shadow-lg shadow-blue-950/20 group-hover:scale-105 transition-transform">
+                    🔗
+                  </div>
+                  <span className="text-xs font-bold px-3 py-1 bg-emerald-50 text-emerald-900 border border-emerald-200 rounded-full">
+                    Seamless Connectivity
+                  </span>
                 </div>
-                <h3 className="text-2xl font-bold text-slate-950 mb-4 tracking-tight">Database & CRM Sync</h3>
+                <h3 className="text-2xl font-bold text-slate-950 mb-4 tracking-tight">
+                  API & Ecosystem Pipelines
+                </h3>
                 <p className="text-slate-600 text-sm md:text-base leading-relaxed mb-8">
-                  Eliminate manual copy-pasting. Seamlessly sync data across Google Sheets, Supabase, CRMs, and internal channels in real-time.
+                  Connect your existing software stack without friction. We bridge Google Workspace, Meta Messenger, CRMs, payment gateways, and custom databases via secure Webhooks and official APIs.
                 </p>
               </div>
               <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-wider text-blue-900">Real-Time Sync</span>
+                <span className="text-xs font-bold uppercase tracking-wider text-blue-900">Zero Data Silos</span>
+                <span className="text-slate-400 group-hover:translate-x-1 transition-transform">→</span>
+              </div>
+            </div>
+
+            {/* Service 4: Bespoke Enterprise Systems & More (Spans 2 Columns) */}
+            <div className="md:col-span-2 group relative p-8 md:p-10 rounded-3xl bg-white border border-slate-200 shadow-sm hover:border-blue-900 hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden">
+              <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-br from-amber-50 to-transparent rounded-bl-full pointer-events-none transition-transform group-hover:scale-110"></div>
+              <div>
+                <div className="flex items-center justify-between mb-8">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-950 to-blue-900 text-white flex items-center justify-center font-bold text-2xl shadow-lg shadow-blue-950/20 group-hover:scale-105 transition-transform">
+                    ⚙️
+                  </div>
+                  <span className="text-xs font-bold px-3 py-1 bg-amber-50 text-amber-900 border border-amber-200 rounded-full">
+                    End-to-End Delivery
+                  </span>
+                </div>
+                <h3 className="text-2xl md:text-3xl font-bold text-slate-950 mb-4 tracking-tight">
+                  Bespoke Enterprise Systems & More
+                </h3>
+                <p className="text-slate-600 text-sm md:text-base leading-relaxed mb-8 max-w-2xl">
+                  Need a completely tailored technical solution? From custom AI agent tools and automated CRM suites to full operational migrations—we design, build, deploy, and maintain bespoke software systems engineered specifically around your business model.
+                </p>
+
+                <div className="flex flex-wrap gap-2 text-xs font-semibold text-slate-700 mb-8">
+                  <span className="px-3.5 py-2 rounded-xl bg-slate-100 border border-slate-200">Custom AI Agents</span>
+                  <span className="px-3.5 py-2 rounded-xl bg-slate-100 border border-slate-200">Order Management</span>
+                  <span className="px-3.5 py-2 rounded-xl bg-slate-100 border border-slate-200">Automated Dashboards</span>
+                  <span className="px-3.5 py-2 rounded-xl bg-blue-950 text-white font-bold">And More...</span>
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+                <span className="text-xs font-bold uppercase tracking-wider text-blue-900">Tailored Solutions</span>
                 <span className="text-slate-400 group-hover:translate-x-1 transition-transform">→</span>
               </div>
             </div>
@@ -556,7 +564,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Why Kinetix / Comparison Section na may Floating Boxed Container Layout */}
+      {/* Why Kinetix / Comparison Section */}
       <section id="comparison" className="py-24 bg-slate-50 border-b border-slate-200/60 relative overflow-hidden">
         <div className="max-w-6xl mx-auto px-6">
           <div className="bg-white rounded-[32px] border border-slate-200/80 shadow-xl shadow-slate-950/5 p-8 md:p-16 relative overflow-hidden">

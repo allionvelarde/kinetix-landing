@@ -278,7 +278,7 @@ export default function Home() {
                 <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Your Name</label>
                 <input 
                   type="text" 
-                  name="name"         {/* 👈 Siguraduhing nandito ito */}
+                  name="name" 
                   required 
                   placeholder="John Doe" 
                   className="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-900" 
@@ -288,7 +288,7 @@ export default function Home() {
                 <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Business Email</label>
                 <input 
                   type="email" 
-                  name="email"        {/* 👈 Siguraduhing nandito ito */}
+                  name="email" 
                   required 
                   placeholder="john@company.com" 
                   className="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-900" 

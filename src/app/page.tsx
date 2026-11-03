@@ -260,90 +260,47 @@ export default function Home() {
 
   const monthlySavings = teamSize * hoursSpent * 100 * 22;
 
-  const handleFormSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    alert("Audit Request Sent! We will contact you shortly.");
-    setIsModalOpen(false);
-  };
-
-  return (
-    <main className="min-h-screen bg-slate-50 text-slate-900 selection:bg-blue-900 selection:text-white relative">
-      {/* Header / Navbar */}
-      <header className="sticky top-0 z-40 w-full border-b border-slate-200/80 bg-white/90 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <a href="#" className="flex items-center gap-3">
-            <Image
-              src="/logo.jpg"
-              alt="Kinetix Logo"
-              width={40}
-              height={40}
-              className="rounded-xl object-cover shadow-sm border border-slate-100"
-            />
-            <span className="font-extrabold text-xl tracking-tight text-blue-900 lowercase">kinetix</span>
-          </a>
-
-          <nav className="hidden md:flex items-center gap-8 font-medium text-sm text-slate-600">
-            <a href="#solutions" className="hover:text-blue-900 transition-colors">Solutions</a>
-            <a href="#comparison" className="hover:text-blue-900 transition-colors">Why Automation</a>
-            <a href="#process" className="hover:text-blue-900 transition-colors">How It Works</a>
-            <a href="#calculator" className="hover:text-blue-900 transition-colors">ROI Calculator</a>
-            <a href="#faq" className="hover:text-blue-900 transition-colors">FAQ</a>
-          </nav>
-
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="bg-blue-950 hover:bg-blue-900 text-white font-semibold text-sm px-5 py-2.5 rounded-lg transition-all shadow-md shadow-blue-950/10"
-          >
-            Book Audit
-          </button>
-        </div>
-      </header>
-
-      {/* Hero Section */}
-      <section className="relative pt-24 pb-20 md:pt-32 md:pb-28 bg-white border-b border-slate-200/60 text-center overflow-hidden">
-        <div className="absolute inset-0 bg-grid-pattern opacity-15 pointer-events-none"></div>
-
-        <div
-          className="absolute inset-0 bg-grid-pattern pointer-events-none transition-all duration-75 ease-out"
-          style={{
-            WebkitMaskImage: `radial-gradient(600px circle at ${mousePos.x}px ${mousePos.y}px, black 0%, rgba(0,0,0,0.4) 50%, transparent 100%)`,
-            maskImage: `radial-gradient(600px circle at ${mousePos.x}px ${mousePos.y}px, black 0%, rgba(0,0,0,0.4) 50%, transparent 100%)`,
-          }}
-        ></div>
-
-        <div className="max-w-4xl mx-auto px-6 relative z-10">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-slate-200 bg-white/90 backdrop-blur-sm text-slate-700 text-xs font-semibold tracking-wide uppercase mb-6 shadow-sm">
-            <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
-            Enterprise AI Architecture & Automation
-          </div>
-
-          <h1 className="text-4xl md:text-6xl font-extrabold text-slate-950 tracking-tight leading-[1.15] mb-6">
-            Eliminate Operational Bottlenecks with <br className="hidden sm:inline" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-950 via-blue-800 to-blue-600">
-              Smart AI Systems.
-            </span>
-          </h1>
-
-          <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed mb-10">
-            We design custom end-to-end automation pipelines for scaling businesses. Replace hours of tedious manual tasks with instant, automated data execution.
-          </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+  {/* Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-md w-full p-8 shadow-2xl border border-slate-200 relative">
             <button
-              onClick={() => setIsModalOpen(true)}
-              className="w-full sm:w-auto bg-blue-950 hover:bg-blue-900 text-white font-semibold px-8 py-4 rounded-xl transition-all shadow-md shadow-blue-950/20"
+              onClick={() => setIsModalOpen(false)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 font-bold text-lg"
             >
-              Get Free Workflow Audit
+              ✕
             </button>
-            <a
-              href="#solutions"
-              className="w-full sm:w-auto bg-white hover:bg-slate-50 border border-slate-300 text-slate-800 font-semibold px-8 py-4 rounded-xl transition-all shadow-sm"
-            >
-              Explore Solutions
-            </a>
+            <h3 className="text-xl font-bold text-slate-950 mb-2">Book a Free Workflow Audit</h3>
+            <p className="text-sm text-slate-600 mb-6">Leave your details and our agency will analyze your business processes.</p>
+            
+            <form onSubmit={handleFormSubmit} className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Your Name</label>
+                <input 
+                  type="text" 
+                  name="name"         {/* 👈 Siguraduhing nandito ito */}
+                  required 
+                  placeholder="John Doe" 
+                  className="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-900" 
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Business Email</label>
+                <input 
+                  type="email" 
+                  name="email"        {/* 👈 Siguraduhing nandito ito */}
+                  required 
+                  placeholder="john@company.com" 
+                  className="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-900" 
+                />
+              </div>
+              <button type="submit" className="w-full bg-blue-950 hover:bg-blue-900 text-white font-semibold py-3 rounded-xl text-sm transition-all shadow-md">
+                Submit Audit Request
+              </button>
+            </form>
           </div>
         </div>
-      </section>
+      )}
     
       {/* Clean Minimalist Logo Marquee */}
       <section className="py-14 bg-white border-b border-slate-200/60">

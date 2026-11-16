@@ -1,816 +1,919 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
-import Image from 'next/image';
+import React, { useEffect, useState } from 'react';
 
-// Sticky Scrollytelling & Mobile-Responsive Process Component
-function ProcessScrollytelling() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [activeStep, setActiveStep] = useState<number>(0);
+const AI_STACK_BRANDS = [
+  {
+    name: 'OpenAI',
+    icon: (
+      <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+        <path d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0905 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.259 23a6.0557 6.0557 0 0 0 5.772-4.2057 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7468-6.0732z" />
+      </svg>
+    ),
+  },
+  {
+    name: 'Google Gemini',
+    icon: (
+      <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+        <path d="M12 2C12.3 7.4 16.6 11.7 22 12C16.6 12.3 12.3 16.6 12 22C11.7 16.6 7.4 12.3 2 12C7.4 11.7 11.7 7.4 12 2Z" />
+      </svg>
+    ),
+  },
+  {
+    name: 'Make.com',
+    icon: (
+      <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+      </svg>
+    ),
+  },
+  {
+    name: 'n8n',
+    icon: (
+      <svg className="w-5 h-5 stroke-current" fill="none" strokeWidth="2.2" viewBox="0 0 24 24">
+        <circle cx="5" cy="12" r="2.5" />
+        <circle cx="19" cy="7" r="2.5" />
+        <circle cx="19" cy="17" r="2.5" />
+        <path d="M7.5 12h4l5-5M11.5 12l5 5" strokeLinecap="round" />
+      </svg>
+    ),
+  },
+  {
+    name: 'Google Workspace',
+    icon: (
+      <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+        <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z" />
+      </svg>
+    ),
+  },
+  {
+    name: 'Anthropic',
+    icon: (
+      <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+        <path d="M14.6 4h-2.8L6 20h2.9l1.3-3.7h5.6l1.3 3.7H20L14.6 4zm-3.5 9.8 1.9-5.5 1.9 5.5h-3.8z" />
+      </svg>
+    ),
+  },
+  {
+    name: 'TensorFlow',
+    icon: (
+      <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+        <path d="M12 2L3 7.2v9.6l3.5 2V9.2L12 6l5.5 3.2v3.6l-3.5-2v4l3.5 2v4.1L21 16.8V7.2L12 2z" />
+      </svg>
+    ),
+  },
+  {
+    name: 'Supabase',
+    icon: (
+      <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+        <path d="M21.362 9.354H12V.326a.326.326 0 00-.555-.23L.638 10.9a.326.326 0 00.23.555H12v9.028a.326.326 0 00.555.23l10.807-10.803a.326.326 0 00-.23-.556z" />
+      </svg>
+    ),
+  },
+];
+
+const SOLUTIONS_CARDS = [
+  {
+    number: '/ 01',
+    title: 'AI workflow pipelines.',
+    icon: (
+      <svg className="w-4 h-4 text-blue-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+        <path d="M12 2L2 7l10 5 10-5-10-5z" strokeLinejoin="round" />
+        <path d="M2 17l10 5 10-5M2 12l10 5 10-5" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+    items: [
+      'Connect n8n, Make.com & REST APIs',
+      'Eliminate 98% of repetitive tasks',
+      'Real-time CRM & database sync',
+      'Custom webhook triggers 24/7',
+      'Zero-latency execution logs',
+    ],
+  },
+  {
+    number: '/ 02',
+    title: 'Autonomous agents.',
+    icon: (
+      <svg className="w-4 h-4 text-blue-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+        <rect x="4" y="4" width="16" height="16" rx="3" />
+        <circle cx="12" cy="12" r="3" />
+        <path d="M12 4v2M12 18v2M4 12h2M18 12h2" strokeLinecap="round" />
+      </svg>
+    ),
+    items: [
+      'Trained on your exact business SOPs',
+      'Multi-agent OpenAI & Gemini routing',
+      'Instant catalog & pricing recall',
+      'Human-in-the-loop approval gates',
+      'Continuous accuracy monitoring',
+    ],
+  },
+  {
+    number: '/ 03',
+    title: 'Smart inquiry routing.',
+    icon: (
+      <svg className="w-4 h-4 text-blue-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+        <path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4" strokeLinecap="round" />
+      </svg>
+    ),
+    items: [
+      'Auto-resolve 50k+ customer FAQs',
+      'Flag high-ticket bulk buyers fast',
+      'Instant VIP alerts to your dashboard',
+      'Automated lead scoring & tagging',
+      'Full conversation audit trail',
+    ],
+  },
+];
+
+const SECURITY_ITEMS = [
+  {
+    number: '(01)',
+    title: 'End-to-End Encryption',
+    description: 'All enterprise workflows and data streams are secured using AES-256 and TLS 1.3 protocol encryption.',
+  },
+  {
+    number: '(02)',
+    title: 'Zero-Trust Architecture',
+    description: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
+  },
+  {
+    number: '(03)',
+    title: 'SOC 2 & GDPR Compliance',
+    description: 'Fully audited infrastructure designed to meet the highest global data privacy and regulatory standards.',
+  },
+];
+
+const PROCESS_STEPS = [
+  {
+    number: '01',
+    title: 'Discovery & Audit',
+    description: 'We map your existing enterprise stack, identify manual bottlenecks, and blueprint your optimal automation architecture.',
+  },
+  {
+    number: '02',
+    title: 'Build & Train',
+    description: 'Our engineers configure n8n/Make.com pipelines and train custom AI agents strictly on your business SOPs and pricing catalogs.',
+  },
+  {
+    number: '03',
+    title: 'Sandbox Testing',
+    description: 'Rigorous stress-testing and edge-case simulation in a secure staging environment to guarantee zero-error execution.',
+  },
+  {
+    number: '04',
+    title: 'Deploy & Scale',
+    description: 'Zero-downtime production launch with real-time telemetry dashboards and ongoing optimization as your workflows scale 24/7.',
+  },
+];
+
+export default function KinetixLandingPage() {
+  const [activeNav, setActiveNav] = useState<'Home' | 'Solutions' | 'Security' | 'Process'>('Home');
+  const [activeSecurity, setActiveSecurity] = useState<number>(1);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      if (!containerRef.current) return;
+    const sections = ['Home', 'Solutions', 'Security', 'Process'] as const;
 
-      const rect = containerRef.current.getBoundingClientRect();
-      const containerHeight = rect.height - window.innerHeight;
-      
-      const scrollProgress = Math.min(
-        Math.max(-rect.top / containerHeight, 0),
-        1
-      );
+    const onScroll = () => {
+      const line = window.innerHeight * 0.35;
+      let current: (typeof sections)[number] = 'Home';
 
-      const step = Math.min(Math.floor(scrollProgress * 4), 3);
-      setActiveStep(step);
+      for (const name of sections) {
+        const el = document.getElementById(name.toLowerCase());
+        if (el && el.getBoundingClientRect().top <= line) {
+          current = name;
+        }
+      }
+      setActiveNav(current);
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-
-    return () => window.removeEventListener('scroll', handleScroll);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
   }, []);
 
-  const steps = [
-    {
-      number: "01",
-      title: "Workflow Audit",
-      description: "We map your daily tasks and identify friction bottlenecks slowing down your business.",
-      phase: "Phase 1",
-      detail: "Deep-dive operational assessment"
-    },
-    {
-      number: "02",
-      title: "Architecture Blueprint",
-      description: "We design a custom automation workflow diagram tailored to your existing software.",
-      phase: "Phase 2",
-      detail: "Custom API & webhook mapping"
-    },
-    {
-      number: "03",
-      title: "Build & Testing",
-      description: "We construct the system, integrate APIs, test error-handling, and secure pipelines.",
-      phase: "Phase 3",
-      detail: "Staging environment validation"
-    },
-    {
-      number: "04",
-      title: "Handoff & Support",
-      description: "We launch the live system, provide training guides, and monitor ongoing maintenance.",
-      phase: "Phase 4",
-      detail: "Production deployment & handoff"
-    }
-  ];
-
   return (
-    <section 
-      ref={containerRef} 
-      id="process" 
-      className="relative md:h-[300vh] bg-gradient-to-b from-slate-50 via-blue-50/50 to-slate-100 border-b border-slate-200/60 py-20 md:py-0"
-    >
-      {/* Desktop Sticky Viewport / Mobile Normal Flow */}
-      <div className="md:sticky md:top-0 md:h-screen flex flex-col justify-center max-w-7xl mx-auto px-6 overflow-hidden">
-        
-        <div className="text-center max-w-2xl mx-auto mb-12">
-          <span className="inline-block px-3.5 py-1 mb-3 text-xs font-semibold rounded-full border border-slate-200 bg-white text-slate-700 uppercase tracking-wider shadow-sm">
-            Execution Roadmap
-          </span>
-          <h2 className="text-3xl md:text-5xl font-extrabold text-slate-950 tracking-tight mb-3">
-            Our 4-Step Engineering Process
-          </h2>
-          <p className="text-slate-600 text-sm md:text-base">
-            How we transition your business from manual bottlenecks to automated architecture.
-          </p>
+    <div className="min-h-screen bg-[#030714] text-white font-sans selection:bg-blue-500 selection:text-white overflow-x-hidden">
+      
+      {/* SECTION 1: HERO & NAVBAR */}
+      <section
+        id="home"
+        className="relative w-full overflow-hidden bg-gradient-to-br from-[#0B1F4D] via-[#06112E] to-[#030714]"
+      >
+        <div
+          className="pointer-events-none absolute -top-[15%] -left-[10%] w-[85vw] h-[75vw] max-h-[900px] opacity-85 blur-[90px] -rotate-25"
+          style={{
+            background:
+              'radial-gradient(ellipse at 30% 25%, rgba(96, 165, 250, 0.6) 0%, rgba(37, 99, 235, 0.28) 45%, rgba(4, 10, 28, 0) 75%)',
+          }}
+        />
+
+        <div
+          className="pointer-events-none absolute top-0 left-[15%] w-[45vw] h-[55vw] max-h-[750px] opacity-45 blur-[70px] -rotate-[32deg]"
+          style={{
+            background:
+              'linear-gradient(180deg, rgba(147, 197, 253, 0.5) 0%, rgba(59, 130, 246, 0.08) 70%, transparent 100%)',
+          }}
+        />
+
+        {/* Navbar */}
+        <header className="relative z-20 w-full px-6 sm:px-10 lg:px-16 pt-7 sm:pt-8">
+          <div className="flex items-center justify-between gap-4">
+            <a href="#home" className="flex items-center gap-2 group shrink-0 py-1">
+              <img
+                src="/kinetix-logo.svg"
+                alt="Kinetix Logo"
+                className="w-7 h-7 shrink-0 object-contain transition-transform duration-300 group-hover:scale-105"
+              />
+              <span
+                style={{ fontFamily: "'Codec Pro', sans-serif" }}
+                className="text-[21px] font-bold tracking-[-0.03em] text-white"
+              >
+                kinetix
+              </span>
+            </a>
+
+            <nav className="hidden sm:flex fixed top-8 left-1/2 -translate-x-1/2 z-50 items-center p-1.5 rounded-2xl bg-[#0B1F4D]/50 backdrop-blur-xl border border-white/[0.12] shadow-[0_8px_30px_rgba(0,0,0,0.25),inset_0_1px_1px_rgba(255,255,255,0.15)]">
+              {(['Home', 'Solutions', 'Security', 'Process'] as const).map((item) => {
+                const isActive = activeNav === item;
+                return (
+                  <a
+                    key={item}
+                    href={`#${item.toLowerCase()}`}
+                    onClick={() => setActiveNav(item)}
+                    className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
+                      isActive
+                        ? 'bg-white/[0.22] text-white shadow-[0_2px_10px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.3)]'
+                        : 'text-slate-200/80 hover:text-white'
+                    }`}
+                  >
+                    {item}
+                  </a>
+                );
+              })}
+            </nav>
+
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="shrink-0 px-5 py-2.5 rounded-full text-sm font-medium text-white bg-gradient-to-b from-[#60A5FA] to-[#2563EB] hover:from-[#93C5FD] hover:to-[#3B82F6] shadow-[0_0_25px_rgba(59,130,246,0.45),inset_0_1px_1px_rgba(255,255,255,0.5)] transition-all duration-300 cursor-pointer"
+            >
+              Book Audit
+            </button>
+          </div>
+
+          <nav className="flex sm:hidden items-center justify-center mt-4">
+            <div className="flex items-center p-1 rounded-2xl bg-white/[0.08] backdrop-blur-xl border border-white/[0.12]">
+              {(['Home', 'Solutions', 'Security', 'Process'] as const).map((item) => {
+                const isActive = activeNav === item;
+                return (
+                  <a
+                    key={item}
+                    href={`#${item.toLowerCase()}`}
+                    onClick={() => setActiveNav(item)}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all duration-300 ${
+                      isActive
+                        ? 'bg-white/[0.22] text-white shadow'
+                        : 'text-slate-200/80 hover:text-white'
+                    }`}
+                  >
+                    {item}
+                  </a>
+                );
+              })}
+            </div>
+          </nav>
+        </header>
+
+        {/* Hero Headline & Concentric CTA */}
+        <div className="relative z-10 flex flex-col items-center justify-center px-6 pt-16 sm:pt-20 pb-14 sm:pb-16 text-center">
+          <h1 className="max-w-5xl pb-2 text-[clamp(2.4rem,5.2vw,4.8rem)] font-bold tracking-[-0.035em] leading-[1.08] text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-blue-200/80 drop-shadow-[0_4px_20px_rgba(0,0,0,0.25)] mb-12 [text-wrap:balance]">
+            <span className="block">Automate the Future</span>
+            <span className="block text-blue-100/90">Scale Every Workflow</span>
+          </h1>
+
+          <div className="relative w-full max-w-[620px] h-[230px] sm:h-[270px] flex items-center justify-center">
+            <div
+              className="pointer-events-none absolute top-2 w-[70%] h-[60%] rounded-full blur-[45px] opacity-90"
+              style={{
+                background:
+                  'radial-gradient(circle at 50% 25%, rgba(191, 219, 254, 0.85) 0%, rgba(59, 130, 246, 0.45) 55%, transparent 80%)',
+              }}
+            />
+
+            <div className="relative w-full h-full rounded-full p-[24px] sm:p-[30px] bg-gradient-to-b from-[#60A5FA]/25 via-[#1E3A8A]/20 to-[#040B1E]/60 border border-blue-300/20 shadow-[inset_0_2px_20px_rgba(147,197,253,0.25)] flex items-center justify-center">
+              <span className="absolute top-[13px] sm:top-[16px] left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-[#0B2559] shadow-[0_0_8px_rgba(147,197,253,0.6)]" />
+
+              <div className="w-full h-full rounded-full p-[22px] sm:p-[28px] bg-gradient-to-b from-[#93C5FD]/30 via-[#1D4ED8]/25 to-[#040B1E]/80 border border-blue-200/30 shadow-[inset_0_2px_24px_rgba(191,219,254,0.35),0_0_30px_rgba(37,99,235,0.2)] flex items-center justify-center">
+                <div className="w-full h-full rounded-full p-[16px] sm:p-[20px] bg-gradient-to-b from-[#BFDBFE]/45 via-[#2563EB]/40 to-[#06112E]/90 border border-white/40 shadow-[inset_0_3px_20px_rgba(255,255,255,0.5),0_0_40px_rgba(59,130,246,0.45)] flex items-center justify-center">
+                  <button
+                    onClick={() => setIsModalOpen(true)}
+                    className="group relative w-full h-full rounded-full bg-gradient-to-b from-[#06102B] to-[#030817] hover:from-[#0A1942] hover:to-[#050D24] border border-blue-400/30 shadow-[0_10px_30px_rgba(0,0,0,0.65),inset_0_1px_1px_rgba(147,197,253,0.25)] flex items-center justify-center gap-4 px-8 transition-all duration-300 cursor-pointer"
+                  >
+                    <span className="whitespace-nowrap text-base sm:text-xl font-medium tracking-wide text-white/95 group-hover:text-white">
+                      Get started for free
+                    </span>
+                    <svg
+                      viewBox="0 0 28 24"
+                      fill="none"
+                      className="shrink-0 w-6 h-6 sm:w-7 sm:h-7 text-white/90 transition-transform duration-300 group-hover:translate-x-1.5"
+                    >
+                      <path
+                        d="M3 9.5H15V5L24.5 12L15 19V14.5H3V9.5Z"
+                        stroke="currentColor"
+                        strokeWidth="1.6"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Cards Grid: Stacked vertical sa mobile (flexcol), 4-columns grid sa desktop (md:grid-cols-4) */}
-        <div className="flex flex-col md:grid md:grid-cols-4 gap-6 relative z-10">
-          {steps.map((step, index) => {
-            const isActive = activeStep === index;
-            const isPassed = activeStep > index;
+        {/* Scrolling AI Brands Marquee */}
+        <div className="relative z-20 w-full pt-6 pb-9 border-t border-white/[0.06] bg-gradient-to-t from-[#030714] to-transparent">
+          <p className="text-center text-[11px] font-semibold uppercase tracking-[0.22em] text-blue-200/50 mb-5">
+            Powered by & Integrated With
+          </p>
 
-            return (
+          <div
+            className="relative w-full overflow-hidden"
+            style={{
+              WebkitMaskImage:
+                'linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%)',
+              maskImage:
+                'linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%)',
+            }}
+          >
+            <div className="animate-marquee flex items-center gap-12 sm:gap-16">
+              {[...AI_STACK_BRANDS, ...AI_STACK_BRANDS].map((brand, idx) => (
+                <div
+                  key={`${brand.name}-${idx}`}
+                  className="flex items-center gap-3 text-slate-300/65 hover:text-white transition-colors duration-300 shrink-0 select-none"
+                >
+                  <span className="text-blue-400/80">{brand.icon}</span>
+                  <span className="text-base sm:text-lg font-semibold tracking-tight">
+                    {brand.name}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 2: SOLUTIONS */}
+      <section
+        id="solutions"
+        className="relative w-full py-24 sm:py-32 px-6 sm:px-10 lg:px-16 bg-[#030714] border-t border-white/[0.05] overflow-hidden"
+      >
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{
+            backgroundImage: `
+              linear-gradient(to right, rgba(96, 165, 250, 0.07) 1px, transparent 1px),
+              linear-gradient(to bottom, rgba(96, 165, 250, 0.07) 1px, transparent 1px)
+            `,
+            backgroundSize: '48px 48px',
+            WebkitMaskImage:
+              'radial-gradient(ellipse 75% 75% at 50% 50%, black 30%, transparent 95%)',
+            maskImage:
+              'radial-gradient(ellipse 75% 75% at 50% 50%, black 30%, transparent 95%)',
+          }}
+        />
+
+        <div
+          className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[70vw] h-[500px] rounded-full blur-[120px] opacity-25"
+          style={{
+            background: 'radial-gradient(circle, rgba(37, 99, 235, 0.45) 0%, transparent 70%)',
+          }}
+        />
+
+        <div className="relative z-10 max-w-[1200px] mx-auto">
+          <div className="max-w-2xl mb-12 sm:mb-14">
+            <h2 className="text-3xl sm:text-4xl lg:text-[42px] font-medium tracking-[-0.025em] leading-[1.15]">
+              <span className="text-white">Tailored automation solutions </span>
+              <span className="text-slate-400/75">
+                to meet the unique needs of your scaling workflows
+              </span>
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 border border-white/[0.09] bg-[#040814]/90 backdrop-blur-sm divide-y md:divide-y-0 md:divide-x divide-white/[0.09]">
+            
+            <div className="relative overflow-hidden min-h-[360px] lg:min-h-[430px] p-7 sm:p-8 flex flex-col justify-between bg-gradient-to-b from-[#060E24] via-[#0F2A6B] to-[#2563EB]">
               <div
-                key={index}
-                className={`relative p-6 md:p-8 rounded-3xl border transition-all duration-500 ease-out flex flex-col justify-between ${
-                  isActive
-                    ? 'bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 text-white border-blue-500 shadow-2xl shadow-blue-950/30 md:scale-105 md:-translate-y-2 ring-2 ring-blue-500/40'
-                    : 'bg-white text-slate-900 border-slate-300 shadow-sm md:bg-white/50 md:opacity-70'
-                }`}
+                className="pointer-events-none absolute -top-12 -left-12 w-64 h-64 rounded-full blur-[60px] opacity-60"
+                style={{
+                  background:
+                    'radial-gradient(circle, rgba(96, 165, 250, 0.55) 0%, transparent 70%)',
+                }}
+              />
+
+              <img
+                src="/kinetix-logo.svg"
+                alt=""
+                aria-hidden="true"
+                className="pointer-events-none select-none absolute -top-10 -left-10 w-52 h-52 object-contain opacity-90 drop-shadow-[0_0_25px_rgba(147,197,253,0.4)]"
+              />
+
+              <div />
+
+              <div className="relative z-10 mt-auto">
+                <p className="text-xl sm:text-[22px] font-medium tracking-tight text-white">
+                  Our solutions.
+                </p>
+              </div>
+            </div>
+
+            {SOLUTIONS_CARDS.map((card) => (
+              <div
+                key={card.number}
+                className="group relative min-h-[360px] lg:min-h-[430px] p-7 sm:p-8 flex flex-col justify-between bg-[#040814]/90 hover:bg-[#070E22]/95 transition-colors duration-300"
               >
                 <div>
-                  <div className="flex items-center justify-between mb-6">
-                    <span
-                      className={`text-2xl md:text-3xl font-black px-3.5 py-1 rounded-2xl border transition-colors duration-500 ${
-                        isActive
-                          ? 'bg-blue-600 text-white border-blue-400 shadow-md shadow-blue-600/40'
-                          : 'bg-blue-50 text-blue-950 border-blue-200'
-                      }`}
-                    >
-                      {step.number}
-                    </span>
-                    <span
-                      className={`w-3 h-3 rounded-full transition-all duration-500 ${
-                        isActive ? 'bg-blue-400 animate-ping' : 'bg-blue-600'
-                      }`}
-                    ></span>
+                  <div className="w-10 h-10 rounded-lg bg-white/[0.04] border border-white/[0.08] flex items-center justify-center mb-6 group-hover:border-blue-400/30 group-hover:bg-blue-500/10 transition-colors">
+                    {card.icon}
                   </div>
 
-                  <h3 className="text-xl font-bold mb-3 tracking-tight">
+                  <div className="flex items-baseline justify-between gap-3">
+                    <h3 className="text-[17px] font-medium tracking-tight text-white">
+                      {card.title}
+                    </h3>
+                    <span className="text-xs font-mono text-slate-500 shrink-0">
+                      {card.number}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="mt-12">
+                  <ul className="space-y-2.5 mb-7">
+                    {card.items.map((item) => (
+                      <li
+                        key={item}
+                        className="flex items-start gap-2.5 text-[13px] leading-snug text-slate-400"
+                      >
+                        <svg
+                          className="w-3.5 h-3.5 text-slate-400/80 shrink-0 mt-0.5"
+                          viewBox="0 0 16 16"
+                          fill="none"
+                        >
+                          <path
+                            d="M3.5 8.5L6.5 11.5L12.5 4.5"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <a
+                    href="#process"
+                    className="inline-flex items-center gap-1.5 text-[13px] font-medium text-white hover:text-blue-300 transition-colors"
+                  >
+                    <span>Learn more</span>
+                    <span className="text-xs transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+                      ↗
+                    </span>
+                  </a>
+                </div>
+              </div>
+            ))}
+
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 3: SECURITY */}
+      <section
+        id="security"
+        className="relative w-full py-24 sm:py-32 px-6 sm:px-10 lg:px-16 bg-[#030714] border-t border-white/[0.05] overflow-hidden"
+      >
+        <div
+          className="pointer-events-none absolute inset-0 opacity-25"
+          style={{
+            backgroundImage: `
+              linear-gradient(to right, rgba(59, 130, 246, 0.15) 1px, transparent 1px),
+              linear-gradient(to bottom, rgba(59, 130, 246, 0.15) 1px, transparent 1px)
+            `,
+            backgroundSize: '90px 90px',
+          }}
+        />
+
+        <div
+          className="pointer-events-none absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full blur-[140px] opacity-50"
+          style={{ background: 'radial-gradient(circle, rgba(37, 99, 235, 0.6) 0%, transparent 70%)' }}
+        />
+
+        <div className="max-w-[1200px] mx-auto relative z-10">
+          
+          <div className="mb-14">
+            <h2 className="text-2xl sm:text-3xl font-medium tracking-tight text-white/90">
+              Table Content Overview
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+            
+            <div className="lg:col-span-8 flex flex-col">
+              {SECURITY_ITEMS.map((item, index) => {
+                const isActive = activeSecurity === index;
+                return (
+                  <div
+                    key={item.number}
+                    onClick={() => setActiveSecurity(index)}
+                    className={`relative cursor-pointer transition-all duration-300 py-7 px-6 sm:px-8 border-y ${
+                      isActive
+                        ? 'bg-gradient-to-r from-blue-900/80 via-blue-800/40 to-transparent border-blue-400/50 shadow-[inset_0_1px_0_rgba(255,255,255,0.25)]'
+                        : 'bg-transparent border-white/[0.08] hover:bg-white/[0.02]'
+                    }`}
+                  >
+                    <div className={`grid items-center ${isActive ? 'grid-cols-1 md:grid-cols-12 gap-4' : 'grid-cols-1'}`}>
+                      
+                      <div className={`flex items-baseline gap-6 sm:gap-10 ${isActive ? 'md:col-span-7' : 'col-span-full'}`}>
+                        <span className="text-base sm:text-lg font-mono text-blue-300/80 shrink-0">
+                          {item.number}
+                        </span>
+                        <h3 className="text-2xl sm:text-3xl lg:text-[32px] font-medium tracking-tight text-white">
+                          {item.title}
+                        </h3>
+                      </div>
+
+                      {isActive && (
+                        <div className="md:col-span-5 text-xs sm:text-[13px] text-slate-200/90 leading-relaxed pl-4 md:pl-0 border-l md:border-l-0 border-blue-400/30">
+                          {item.description}
+                        </div>
+                      )}
+
+                    </div>
+                  </div>
+                );
+              })}
+
+              <div className="flex items-center justify-between pt-12 mt-2 text-sm text-slate-400 font-light">
+                <span>[Technology]</span>
+                <span>[Modern Company]</span>
+              </div>
+            </div>
+
+            <div className="lg:col-span-4 flex items-center justify-center">
+              <div className="relative w-full max-w-[300px] aspect-[4/5] overflow-hidden shadow-[0_25px_60px_rgba(0,0,0,0.9)] border border-blue-400/30 group">
+                <div className="absolute inset-0 bg-gradient-to-t from-blue-950/70 via-transparent to-transparent z-10 pointer-events-none" />
+                <img
+                  src="/kinetix_glass_card.png"
+                  alt="Kinetix Glass Card"
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                <div className="absolute bottom-4 right-4 z-20 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[16px] border-b-white opacity-90" />
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      {/* SECTION 4: PROCESS */}
+      <section
+        id="process"
+        className="relative w-full py-24 sm:py-32 px-6 sm:px-10 lg:px-16 bg-[#040816] border-t border-white/[0.05] overflow-hidden"
+      >
+        <div
+          className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[70vw] max-w-[900px] h-[350px] rounded-full blur-[130px] opacity-45"
+          style={{ background: 'radial-gradient(circle, rgba(37,99,235,0.65) 0%, rgba(29,78,216,0.2) 55%, transparent 80%)' }}
+        />
+
+        <div className="max-w-[1200px] mx-auto relative z-10">
+          
+          <div className="max-w-2xl mb-16 sm:mb-20">
+            <h2 className="text-3xl sm:text-4xl lg:text-[42px] font-bold tracking-tight text-white leading-[1.15]">
+              How We Deploy Your Custom Workflows
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 mb-16">
+            {PROCESS_STEPS.map((step) => (
+              <div
+                key={step.number}
+                className="relative rounded-none bg-[#060D22]/80 backdrop-blur-xl border border-blue-500/25 p-7 flex flex-col justify-between shadow-[0_15px_40px_rgba(0,0,0,0.5)] group hover:border-blue-400/50 transition-all duration-300"
+              >
+                <div className="absolute top-0 left-6 right-6 h-[2px] bg-gradient-to-r from-transparent via-blue-400 to-transparent opacity-80" />
+
+                <div>
+                  <div className="text-4xl sm:text-5xl font-mono font-bold text-white tracking-tight mb-4 group-hover:text-blue-200 transition-colors">
+                    {step.number}
+                  </div>
+                  <h3 className="text-lg font-bold text-white mb-3">
                     {step.title}
                   </h3>
-                  
-                  <p className={`text-sm leading-relaxed ${isActive ? 'text-slate-200' : 'text-slate-600'}`}>
+                </div>
+
+                <div>
+                  <p className="text-sm sm:text-[15px] leading-relaxed text-slate-300">
                     {step.description}
                   </p>
                 </div>
-
-                <div className={`mt-6 pt-4 border-t flex items-center justify-between text-xs font-semibold ${
-                  isActive ? 'border-blue-900/60 text-blue-300' : 'border-slate-100 text-slate-500'
-                }`}>
-                  <span>{step.phase}</span>
-                  <span>{isActive ? 'Active Phase' : step.detail}</span>
-                </div>
               </div>
-            );
-          })}
-        </div>
-
-        {/* Progress Bar (Desktop only) */}
-        <div className="hidden md:block mt-12 max-w-md mx-auto w-full bg-slate-200/80 backdrop-blur-sm h-1.5 rounded-full overflow-hidden shadow-inner">
-          <div
-            className="bg-gradient-to-r from-blue-600 to-blue-950 h-full transition-all duration-300 ease-out"
-            style={{ width: `${((activeStep + 1) / 4) * 100}%` }}
-          ></div>
-        </div>
-
-      </div>
-    </section>
-  );
-}
-
-// Interactive Accordion FAQ Component
-function FAQSection() {
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
-
-  const faqs = [
-    {
-      question: "Will this disrupt our current software setup?",
-      answer: "No. Our automation systems connect directly on top of your existing software infrastructure via secure Webhooks and official APIs. There is zero downtime or need for system migration."
-    },
-    {
-      question: "How long does a custom automation build take?",
-      answer: "Most custom production-ready workflows are fully designed, tested, and deployed within 5 to 10 business days following our initial architecture blueprint."
-    },
-    {
-      question: "What happens if a workflow experiences an error?",
-      answer: "We build automated fallback triggers, error notifications, and log tracking into every system. Plus, our monthly maintenance retainer includes ongoing health monitoring and system updates."
-    },
-    {
-      question: "Can we scale or modify the workflows as our business grows?",
-      answer: "Absolutely. All Kinetix automation pipelines are built on cloud-native modular systems, making it effortless to add new triggers, integrations, or data destinations anytime."
-    }
-  ];
-
-  const toggleFAQ = (index: number) => {
-    setOpenIndex(openIndex === index ? null : index);
-  };
-
-  return (
-    <section id="faq" className="py-24 bg-slate-50 border-b border-slate-200/60 relative overflow-hidden">
-      <div className="max-w-4xl mx-auto px-6 relative z-10">
-        
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <span className="inline-block px-3.5 py-1 mb-4 text-xs font-semibold rounded-full border border-slate-200 bg-white text-slate-700 uppercase tracking-wider shadow-sm">
-            Got Questions?
-          </span>
-          <h2 className="text-3xl md:text-5xl font-extrabold text-slate-950 tracking-tight mb-4">
-            Frequently Asked Questions
-          </h2>
-          <p className="text-slate-600 text-base md:text-lg">
-            Everything you need to know about partnering with Kinetix.
-          </p>
-        </div>
-
-        {/* Accordion Container */}
-        <div className="space-y-4">
-          {faqs.map((faq, index) => {
-            const isOpen = openIndex === index;
-
-            return (
-              <div
-                key={index}
-                className={`rounded-2xl border transition-all duration-300 overflow-hidden ${
-                  isOpen
-                    ? 'bg-white border-blue-900/50 shadow-xl shadow-blue-950/5 ring-1 ring-blue-900/10'
-                    : 'bg-white/85 hover:bg-white border-slate-200 shadow-sm hover:border-slate-300'
-                }`}
-              >
-                <button
-                  onClick={() => toggleFAQ(index)}
-                  className="w-full text-left p-6 md:p-7 flex items-center justify-between gap-4 focus:outline-none"
-                >
-                  <span className={`text-lg font-bold transition-colors ${isOpen ? 'text-blue-950' : 'text-slate-900'}`}>
-                    {faq.question}
-                  </span>
-                  
-                  <span
-                    className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shrink-0 transition-transform duration-300 ${
-                      isOpen
-                        ? 'bg-blue-950 text-white rotate-45'
-                        : 'bg-slate-100 text-slate-600'
-                    }`}
-                  >
-                    +
-                  </span>
-                </button>
-
-                <div
-                  className={`transition-all duration-300 ease-in-out overflow-hidden ${
-                    isOpen ? 'max-h-96 opacity-100 px-6 pb-7 md:px-7' : 'max-h-0 opacity-0 px-6 pb-0'
-                  }`}
-                >
-                  <p className="text-slate-600 text-sm md:text-base leading-relaxed border-t border-slate-100 pt-4">
-                    {faq.answer}
-                  </p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-      </div>
-    </section>
-  );
-}
-
-export default function Home() {
-  const [teamSize, setTeamSize] = useState<number>(3);
-  const [hoursSpent, setHoursSpent] = useState<number>(4);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [selectedService, setSelectedService] = useState<string>("Custom Web Apps & Client Portals");
-  const [customService, setCustomService] = useState<string>("");
-
-  const [mousePos, setMousePos] = useState({ x: -1000, y: -1000 });
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePos({ x: e.clientX, y: e.clientY });
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
-
-  const monthlySavings = teamSize * hoursSpent * 100 * 22;
-
-  // Handle form submission to Make.com Webhook with Dropdown and Concerns
-  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    
-    const formData = new FormData(e.currentTarget);
-    const finalService = selectedService === "Custom Service" ? customService : selectedService;
-
-    const data = {
-      name: formData.get('name'),
-      email: formData.get('email'),
-      service: finalService,
-      concernsAndVision: formData.get('concernsAndVision'),
-      submittedAt: new Date().toISOString(),
-    };
-
-    try {
-      const webhookUrl = 'https://hook.us2.make.com/vtffyl9ir78uclry3cdhx1a4ptvdim27';
-
-      const response = await fetch(webhookUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (response.ok) {
-        alert("Audit Request Sent Successfully! We will contact you shortly.");
-        setIsModalOpen(false);
-      } else {
-        alert("May error sa pag-send. Pakisubukan muli.");
-      }
-    } catch (error) {
-      console.error("Error submitting form:", error);
-      alert("Network error. Pakitingnan ang iyong koneksyon.");
-    }
-  };
-
-  return (
-    <main className="min-h-screen bg-slate-50 text-slate-900 selection:bg-blue-900 selection:text-white relative">
-      {/* Header / Navbar */}
-      <header className="sticky top-0 z-40 w-full border-b border-slate-200/80 bg-white/90 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <a href="#" className="flex items-center gap-3">
-            <Image
-              src="/logo.jpg"
-              alt="Kinetix Logo"
-              width={40}
-              height={40}
-              className="rounded-xl object-cover shadow-sm border border-slate-100"
-            />
-            <span className="font-extrabold text-xl tracking-tight text-blue-900 lowercase">kinetix</span>
-          </a>
-
-          <nav className="hidden md:flex items-center gap-8 font-medium text-sm text-slate-600">
-            <a href="#solutions" className="hover:text-blue-900 transition-colors">Solutions</a>
-            <a href="#comparison" className="hover:text-blue-900 transition-colors">Why Automation</a>
-            <a href="#process" className="hover:text-blue-900 transition-colors">How It Works</a>
-            <a href="#calculator" className="hover:text-blue-900 transition-colors">ROI Calculator</a>
-            <a href="#faq" className="hover:text-blue-900 transition-colors">FAQ</a>
-          </nav>
-
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="bg-blue-950 hover:bg-blue-900 text-white font-semibold text-sm px-5 py-2.5 rounded-lg transition-all shadow-md shadow-blue-950/10"
-          >
-            Book Audit
-          </button>
-        </div>
-      </header>
-
-      {/* Hero Section */}
-      <section className="relative pt-24 pb-20 md:pt-32 md:pb-28 bg-white border-b border-slate-200/60 text-center overflow-hidden">
-        <div className="absolute inset-0 bg-grid-pattern opacity-15 pointer-events-none"></div>
-
-        <div
-          className="absolute inset-0 bg-grid-pattern pointer-events-none transition-all duration-75 ease-out"
-          style={{
-            WebkitMaskImage: `radial-gradient(600px circle at ${mousePos.x}px ${mousePos.y}px, black 0%, rgba(0,0,0,0.4) 50%, transparent 100%)`,
-            maskImage: `radial-gradient(600px circle at ${mousePos.x}px ${mousePos.y}px, black 0%, rgba(0,0,0,0.4) 50%, transparent 100%)`,
-          }}
-        ></div>
-
-        <div className="max-w-4xl mx-auto px-6 relative z-10">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-slate-200 bg-white/90 backdrop-blur-sm text-slate-700 text-xs font-semibold tracking-wide uppercase mb-6 shadow-sm">
-            <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
-            Enterprise AI Architecture & Automation
+            ))}
           </div>
 
-          <h1 className="text-4xl md:text-6xl font-extrabold text-slate-950 tracking-tight leading-[1.15] mb-6">
-            Eliminate Operational Bottlenecks with <br className="hidden sm:inline" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-950 via-blue-800 to-blue-600">
-              Smart AI Systems.
-            </span>
-          </h1>
-
-          <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed mb-10">
-            We design custom end-to-end automation pipelines for scaling businesses. Replace hours of tedious manual tasks with instant, automated data execution.
-          </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="w-full sm:w-auto bg-blue-950 hover:bg-blue-900 text-white font-semibold px-8 py-4 rounded-xl transition-all shadow-md shadow-blue-950/20"
-            >
-              Get Free Workflow Audit
-            </button>
-            <a
-              href="#solutions"
-              className="w-full sm:w-auto bg-white hover:bg-slate-50 border border-slate-300 text-slate-800 font-semibold px-8 py-4 rounded-xl transition-all shadow-sm"
-            >
-              Explore Solutions
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* Clean Minimalist Logo Marquee */}
-      <section className="py-14 bg-white border-b border-slate-200/60">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-8">
-            <p className="text-xs font-bold uppercase tracking-widest text-slate-400">Integrated with Enterprise Infrastructure</p>
-          </div>
-          
-          <div className="relative w-full overflow-hidden">
-            <div className="pointer-events-none absolute left-0 top-0 bottom-0 z-10 w-24 bg-gradient-to-r from-white to-transparent"></div>
-            <div className="pointer-events-none absolute right-0 top-0 bottom-0 z-10 w-24 bg-gradient-to-l from-white to-transparent"></div>
-
-            <div className="animate-marquee flex items-center gap-16 md:gap-24 grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
-              <div className="flex items-center gap-3 shrink-0">
-                <svg className="w-8 h-8 fill-slate-900" viewBox="0 0 24 24">
-                  <path d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0905 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.259 23a6.0557 6.0557 0 0 0 5.772-4.2057 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7468-6.0732z"/>
-                </svg>
-                <span className="font-extrabold text-2xl tracking-tight text-slate-900">OpenAI</span>
-              </div>
-
-              <div className="flex items-center gap-3 shrink-0">
-                <svg className="w-8 h-8 fill-emerald-600" viewBox="0 0 24 24">
-                  <path d="M21.362 9.354H12V.326a.326.326 0 00-.555-.23L.638 10.9a.326.326 0 00.23.555H12v9.028a.326.326 0 00.555.23l10.807-10.803a.326.326 0 00-.23-.556z"/>
-                </svg>
-                <span className="font-extrabold text-2xl tracking-tight text-slate-900">supabase</span>
-              </div>
-
-              <div className="flex items-center gap-3 shrink-0">
-                <svg className="w-8 h-8 fill-purple-600" viewBox="0 0 24 24">
-                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-                </svg>
-                <span className="font-extrabold text-2xl tracking-tight text-slate-900">make</span>
-              </div>
-
-              <div className="flex items-center gap-3 shrink-0">
-                <span className="font-serif font-black text-3xl tracking-tighter text-slate-900">ANTHROPIC</span>
-              </div>
-
-              <div className="flex items-center gap-3 shrink-0">
-                <svg className="w-8 h-8 fill-blue-600" viewBox="0 0 24 24">
-                  <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/>
-                </svg>
-                <span className="font-bold text-2xl tracking-tight text-slate-900">Google Workspace</span>
-              </div>
-
-              <div className="flex items-center gap-3 shrink-0">
-                <svg className="w-8 h-8 stroke-blue-700" fill="none" viewBox="0 0 24 24" strokeWidth="2.5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                </svg>
-                <span className="font-extrabold text-2xl tracking-tight text-slate-900">webhooks</span>
-              </div>
+          <div className="flex items-center gap-3 pt-6 border-t border-white/[0.08] max-w-xl">
+            <div className="w-8 h-8 rounded-none bg-white/[0.05] border border-white/[0.1] flex items-center justify-center shrink-0 text-blue-300">
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M7 17L17 7M17 7H7M17 7V17" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Solutions / Services Section */}
-      <section id="solutions" className="py-24 bg-slate-50 border-b border-slate-200/60 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 relative z-10">
-          
-          <div className="text-center max-w-2xl mx-auto mb-16">
-            <span className="inline-block px-3.5 py-1 mb-4 text-xs font-semibold rounded-full border border-slate-200 bg-white text-slate-700 uppercase tracking-wider shadow-sm">
-              Our Capabilities
-            </span>
-            <h2 className="text-3xl md:text-5xl font-extrabold text-slate-950 tracking-tight mb-4">
-              Enterprise Tech & AI Architecture
-            </h2>
-            <p className="text-slate-600 text-base md:text-lg">
-              We build the digital infrastructure your business needs—from full-stack web applications to hands-off AI workflows.
+            <p className="text-xs sm:text-sm text-slate-400 leading-snug">
+              From initial audit to fully autonomous 24/7 execution — structured for speed, security, and enterprise scale.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="md:col-span-2 group relative p-8 md:p-10 rounded-3xl bg-white border border-slate-300 shadow-sm hover:border-blue-900 hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden">
-              <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-br from-blue-100/50 to-transparent rounded-bl-full pointer-events-none transition-transform group-hover:scale-110"></div>
-              <div>
-                <div className="flex items-center justify-between mb-6">
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-950 to-blue-900 text-white flex items-center justify-center font-bold text-2xl shadow-lg shadow-blue-950/20 group-hover:scale-105 transition-transform">
-                    🌐
-                  </div>
-                  <span className="text-xs font-bold px-3 py-1 bg-blue-50 text-blue-900 border border-blue-200 rounded-full">
-                    Core Infrastructure
-                  </span>
-                </div>
-                <h3 className="text-2xl md:text-3xl font-bold text-slate-950 mb-3 tracking-tight">
-                  Custom Web Apps & Client Portals
-                </h3>
-                <p className="text-slate-600 text-sm md:text-base leading-relaxed mb-6 max-w-2xl">
-                  High-performance, secure web applications engineered with Next.js, Tailwind CSS, and Supabase. Whether you need a customer dashboard, an internal operational management portal, or an e-commerce engine, we construct your complete digital hub.
-                </p>
-                
-                <div className="grid sm:grid-cols-3 gap-3 mb-6 text-xs font-semibold text-slate-700">
-                  <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center gap-2">
-                    <span className="text-blue-600 font-bold">✓</span> Admin & Client Dashboards
-                  </div>
-                  <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center gap-2">
-                    <span className="text-blue-600 font-bold">✓</span> Real-Time Database
-                  </div>
-                  <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center gap-2">
-                    <span className="text-blue-600 font-bold">✓</span> Fully Scalable Cloud
+        </div>
+      </section>
+
+      {/* SECTION 5: CTA BANNER WITH FADED GRID & HERO-STYLE CONCENTRIC BUTTON */}
+      <section className="relative w-full py-24 sm:py-32 px-6 sm:px-10 lg:px-16 bg-[#030714] border-t border-white/[0.05] overflow-hidden">
+        
+        {/* Faded Grid Background Pattern */}
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{
+            backgroundImage: `
+              linear-gradient(to right, rgba(96, 165, 250, 0.07) 1px, transparent 1px),
+              linear-gradient(to bottom, rgba(96, 165, 250, 0.07) 1px, transparent 1px)
+            `,
+            backgroundSize: '48px 48px',
+            WebkitMaskImage:
+              'radial-gradient(ellipse 75% 75% at 50% 50%, black 30%, transparent 95%)',
+            maskImage:
+              'radial-gradient(ellipse 75% 75% at 50% 50%, black 30%, transparent 95%)',
+          }}
+        />
+
+        <div className="max-w-[1200px] mx-auto relative z-10">
+          <div className="relative rounded-[32px] bg-[#040816]/90 backdrop-blur-sm border border-white/[0.08] pt-16 pb-24 px-6 text-center overflow-hidden shadow-[0_30px_100px_rgba(0,0,0,0.8)]">
+            
+            {/* Seamless Bottom Gradient conforming to border-radius */}
+            <div
+              className="pointer-events-none absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-blue-600/60 via-blue-600/20 to-transparent rounded-b-[32px]"
+            />
+
+            <div className="relative z-10 max-w-2xl mx-auto">
+              <h2 className="text-3xl sm:text-4xl lg:text-[42px] font-bold tracking-tight text-white mb-4">
+                Ready to take your automation to the next level?
+              </h2>
+              <p className="text-sm sm:text-base text-slate-400 mb-10">
+                Get audited and start scaling your workflows with confidence today.
+              </p>
+              
+              {/* Hero-Style Concentric Pill Button for CTA */}
+              <div className="relative w-full max-w-[500px] h-[180px] sm:h-[200px] mx-auto flex items-center justify-center">
+                <div
+                  className="pointer-events-none absolute top-2 w-[70%] h-[60%] rounded-full blur-[35px] opacity-90"
+                  style={{
+                    background:
+                      'radial-gradient(circle at 50% 25%, rgba(191, 219, 254, 0.85) 0%, rgba(59, 130, 246, 0.45) 55%, transparent 80%)',
+                  }}
+                />
+
+                <div className="relative w-full h-full rounded-full p-[20px] sm:p-[24px] bg-gradient-to-b from-[#60A5FA]/25 via-[#1E3A8A]/20 to-[#040B1E]/60 border border-blue-300/20 shadow-[inset_0_2px_20px_rgba(147,197,253,0.25)] flex items-center justify-center">
+                  <span className="absolute top-[11px] left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-[#0B2559] shadow-[0_0_8px_rgba(147,197,253,0.6)]" />
+
+                  <div className="w-full h-full rounded-full p-[18px] sm:p-[22px] bg-gradient-to-b from-[#93C5FD]/30 via-[#1D4ED8]/25 to-[#040B1E]/80 border border-blue-200/30 shadow-[inset_0_2px_24px_rgba(191,219,254,0.35),0_0_30px_rgba(37,99,235,0.2)] flex items-center justify-center">
+                    <div className="w-full h-full rounded-full p-[14px] sm:p-[16px] bg-gradient-to-b from-[#BFDBFE]/45 via-[#2563EB]/40 to-[#06112E]/90 border border-white/40 shadow-[inset_0_3px_20px_rgba(255,255,255,0.5),0_0_40px_rgba(59,130,246,0.45)] flex items-center justify-center">
+                      <button
+                        onClick={() => setIsModalOpen(true)}
+                        className="group relative w-full h-full rounded-full bg-gradient-to-b from-[#06102B] to-[#030817] hover:from-[#0A1942] hover:to-[#050D24] border border-blue-400/30 shadow-[0_10px_30px_rgba(0,0,0,0.65),inset_0_1px_1px_rgba(147,197,253,0.25)] flex items-center justify-center gap-3 px-6 transition-all duration-300 cursor-pointer"
+                      >
+                        <span className="whitespace-nowrap text-sm sm:text-lg font-medium tracking-wide text-white/95 group-hover:text-white">
+                          Get Audited
+                        </span>
+                        <svg
+                          viewBox="0 0 28 24"
+                          fill="none"
+                          className="shrink-0 w-5 h-5 sm:w-6 sm:h-6 text-white/90 transition-transform duration-300 group-hover:translate-x-1.5"
+                        >
+                          <path
+                            d="M3 9.5H15V5L24.5 12L15 19V14.5H3V9.5Z"
+                            stroke="currentColor"
+                            strokeWidth="1.6"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-wider text-blue-900">Custom Built Systems</span>
-                <span className="text-slate-400 group-hover:translate-x-1 transition-transform">→</span>
-              </div>
             </div>
-
-            <div className="group relative p-8 rounded-3xl bg-white border border-slate-300 shadow-sm hover:border-blue-900 hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-50 to-transparent rounded-bl-full pointer-events-none transition-transform group-hover:scale-110"></div>
-              <div>
-                <div className="flex items-center justify-between mb-6">
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-950 to-blue-900 text-white flex items-center justify-center font-bold text-2xl shadow-lg shadow-blue-950/20 group-hover:scale-105 transition-transform">
-                    🧠
-                  </div>
-                  <span className="text-xs font-bold px-3 py-1 bg-purple-50 text-purple-900 border border-purple-200 rounded-full">
-                    Workflow Intelligence
-                  </span>
-                </div>
-                <h3 className="text-xl font-bold text-slate-950 mb-3 tracking-tight">
-                  Smart AI Workflow Engines
-                </h3>
-                <p className="text-slate-600 text-sm leading-relaxed mb-6">
-                  Eliminate repetitive manual tasks. We design custom AI logic using OpenAI and Make.com to process incoming leads, analyze complex invoices, handle support queries, and route data automatically.
-                </p>
-              </div>
-              <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-wider text-blue-900">10x Speed</span>
-                <span className="text-slate-400 group-hover:translate-x-1 transition-transform">→</span>
-              </div>
-            </div>
-
-            <div className="group relative p-8 rounded-3xl bg-white border border-slate-300 shadow-sm hover:border-blue-900 hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-emerald-50 to-transparent rounded-bl-full pointer-events-none transition-transform group-hover:scale-110"></div>
-              <div>
-                <div className="flex items-center justify-between mb-6">
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-950 to-blue-900 text-white flex items-center justify-center font-bold text-2xl shadow-lg shadow-blue-950/20 group-hover:scale-105 transition-transform">
-                    🔗
-                  </div>
-                  <span className="text-xs font-bold px-3 py-1 bg-emerald-50 text-emerald-900 border border-emerald-200 rounded-full">
-                    Connectivity
-                  </span>
-                </div>
-                <h3 className="text-xl font-bold text-slate-950 mb-3 tracking-tight">
-                  API & Ecosystem Pipelines
-                </h3>
-                <p className="text-slate-600 text-sm leading-relaxed mb-6">
-                  Connect your existing software stack without friction. We bridge Google Workspace, Meta Messenger, CRMs, payment gateways, and custom databases via secure Webhooks and official APIs.
-                </p>
-              </div>
-              <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-wider text-blue-900">Zero Data Silos</span>
-                <span className="text-slate-400 group-hover:translate-x-1 transition-transform">→</span>
-              </div>
-            </div>
-
-            <div className="md:col-span-2 group relative p-8 md:p-10 rounded-3xl bg-white border border-slate-300 shadow-sm hover:border-blue-900 hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden">
-              <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-br from-amber-50 to-transparent rounded-bl-full pointer-events-none transition-transform group-hover:scale-110"></div>
-              <div>
-                <div className="flex items-center justify-between mb-6">
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-950 to-blue-900 text-white flex items-center justify-center font-bold text-2xl shadow-lg shadow-blue-950/20 group-hover:scale-105 transition-transform">
-                    ⚙️
-                  </div>
-                  <span className="text-xs font-bold px-3 py-1 bg-amber-50 text-amber-900 border border-amber-200 rounded-full">
-                    End-to-End Delivery
-                  </span>
-                </div>
-                <h3 className="text-2xl md:text-3xl font-bold text-slate-950 mb-3 tracking-tight">
-                  Bespoke Enterprise Systems & More
-                </h3>
-                <p className="text-slate-600 text-sm md:text-base leading-relaxed mb-6 max-w-2xl">
-                  Need a completely tailored technical solution? From custom AI agent tools and automated CRM suites to full operational migrations—we design, build, deploy, and maintain bespoke software systems engineered specifically around your business model.
-                </p>
-
-                <div className="flex flex-wrap gap-2 text-xs font-semibold text-slate-700 mb-6">
-                  <span className="px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200">Custom AI Agents</span>
-                  <span className="px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200">Order Management</span>
-                  <span className="px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200">Automated Dashboards</span>
-                  <span className="px-3.5 py-2 rounded-xl bg-blue-950 text-white font-bold">And More...</span>
-                </div>
-              </div>
-
-              <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-wider text-blue-900">Tailored Solutions</span>
-                <span className="text-slate-400 group-hover:translate-x-1 transition-transform">→</span>
-              </div>
-            </div>
-
           </div>
         </div>
       </section>
 
-      {/* Why Kinetix / Comparison Section */}
-      <section id="comparison" className="py-24 bg-slate-50 border-b border-slate-200/60 relative overflow-hidden">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="bg-white rounded-[32px] border border-slate-200/80 shadow-xl shadow-slate-950/5 p-8 md:p-16 relative overflow-hidden">
-            <div className="text-center max-w-2xl mx-auto mb-16">
-              <span className="inline-block px-3.5 py-1 mb-4 text-xs font-semibold rounded-full border border-slate-200 bg-slate-50 text-slate-700 uppercase tracking-wider">
-                Why Kinetix
-              </span>
-              <h2 className="text-3xl md:text-5xl font-extrabold text-slate-950 tracking-tight mb-4">
-                Why Businesses Switch to Kinetix
-              </h2>
-              <p className="text-slate-600 text-base md:text-lg">
-                Comparing traditional manual business operations versus automated architecture.
+      {/* FOOTER SECTION */}
+      <footer className="relative bg-[#02050E] pt-16 pb-12 border-t border-white/[0.08] overflow-hidden">
+        <div className="max-w-[1200px] mx-auto px-6 sm:px-10 lg:px-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 pb-16 border-b border-white/[0.08]">
+            
+            {/* Col 1: Brand Info */}
+            <div className="lg:col-span-2 space-y-4">
+              <div className="flex items-center gap-2">
+                <img
+                  src="/kinetix-logo.svg"
+                  alt="Kinetix Logo"
+                  className="w-6 h-6 object-contain"
+                />
+                <span
+                  style={{ fontFamily: "'Codec Pro', sans-serif" }}
+                  className="text-xl font-bold tracking-[-0.03em] text-white"
+                >
+                  kinetix
+                </span>
+              </div>
+              <p className="text-sm text-slate-400 max-w-sm leading-relaxed">
+                Empowering businesses with flexible and scalable AI workflow automation solutions for success.
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-8 mb-12">
-              <div className="bg-slate-50/80 rounded-2xl p-8 border border-slate-200 flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center gap-2 mb-4">
-                    <span className="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
-                    <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Traditional Manual Process</span>
-                  </div>
-                  <h3 className="text-xl font-bold text-slate-900 mb-6">Prone to delays and heavy human overhead</h3>
-                  <ul className="space-y-4 text-sm text-slate-600">
-                    <li className="flex items-start gap-3">
-                      <span className="text-rose-500 font-bold">✕</span>
-                      <span>Response times take 2 to 12 hours, leading to cold leads.</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="text-rose-500 font-bold">✕</span>
-                      <span>5% to 15% human error frequency in data entry and copy-pasting.</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="text-rose-500 font-bold">✕</span>
-                      <span>High recurring payroll and staffing overhead for routine tasks.</span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-
-              <div className="bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 text-white rounded-2xl p-8 shadow-lg flex flex-col justify-between relative overflow-hidden">
-                <div>
-                  <div className="flex items-center gap-2 mb-4">
-                    <span className="w-2.5 h-2.5 rounded-full bg-blue-400 animate-pulse"></span>
-                    <span className="text-xs font-bold uppercase tracking-wider text-blue-300">Kinetix Automated System</span>
-                  </div>
-                  <h3 className="text-xl font-bold text-white mb-6">Instant, error-free automated execution</h3>
-                  <ul className="space-y-4 text-sm text-slate-200">
-                    <li className="flex items-start gap-3">
-                      <span className="text-blue-400 font-bold">✓</span>
-                      <span>Under 5-second response time, operating 24/7 seamlessly.</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="text-blue-400 font-bold">✓</span>
-                      <span>0% error rate through strict programmatic rule execution.</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="text-blue-400 font-bold">✓</span>
-                      <span>Up to 80% reduction in manual labor overhead and costs.</span>
-                    </li>
-                  </ul>
-                </div>
-
-                <div className="mt-8 pt-6 border-t border-blue-900/40 flex items-center justify-between text-xs text-blue-300">
-                  <span>Powered by Advanced AI & APIs</span>
-                  <span className="font-semibold text-white">Fully Scalable ➔</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Sticky Scrollytelling Process Section */}
-      <ProcessScrollytelling />
-
-      {/* ROI Calculator */}
-      <section id="calculator" className="py-24 bg-white border-b border-slate-200/60">
-        <div className="max-w-4xl mx-auto px-6">
-          <div className="bg-slate-50 p-8 md:p-12 rounded-3xl border border-slate-200 shadow-sm">
-            <div className="text-center mb-10">
-              <h2 className="text-2xl md:text-3xl font-bold text-slate-950 mb-2">Estimate Your Monthly Savings</h2>
-              <p className="text-slate-600 text-sm">Calculate how much payroll budget you reclaim through automation.</p>
+            {/* Col 2: Sitemap */}
+            <div>
+              <p className="text-xs font-mono uppercase tracking-[0.18em] text-white font-semibold mb-5">
+                SITEMAP
+              </p>
+              <ul className="space-y-3 text-sm text-slate-400">
+                <li><a href="#home" className="hover:text-white transition-colors">Home</a></li>
+                <li><a href="#solutions" className="hover:text-white transition-colors">Solutions</a></li>
+                <li><a href="#security" className="hover:text-white transition-colors">Security</a></li>
+                <li><a href="#process" className="hover:text-white transition-colors">Process</a></li>
+              </ul>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-8 items-center">
-              <div className="space-y-6">
-                <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Team Members Handling Manual Admin</label>
-                  <input
-                    type="range"
-                    min="1"
-                    max="20"
-                    value={teamSize}
-                    onChange={(e) => setTeamSize(Number(e.target.value))}
-                    className="w-full accent-blue-900 cursor-pointer"
-                  />
-                  <div className="flex justify-between text-sm font-semibold text-slate-700 mt-1">
-                    <span>1 Person</span>
-                    <span className="text-blue-900 font-bold">{teamSize} {teamSize === 1 ? 'Person' : 'People'}</span>
-                    <span>20 People</span>
-                  </div>
-                </div>
+            {/* Col 3: Resources */}
+            <div>
+              <p className="text-xs font-mono uppercase tracking-[0.18em] text-white font-semibold mb-5">
+                RESOURCES
+              </p>
+              <ul className="space-y-3 text-sm text-slate-400">
+                <li><a href="#" className="hover:text-white transition-colors">Terms of Use</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Refund Policy</a></li>
+              </ul>
+            </div>
 
-                <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Hours Spent on Manual Work per Day</label>
-                  <input
-                    type="range"
-                    min="1"
-                    max="8"
-                    value={hoursSpent}
-                    onChange={(e) => setHoursSpent(Number(e.target.value))}
-                    className="w-full accent-blue-900 cursor-pointer"
-                  />
-                  <div className="flex justify-between text-sm font-semibold text-slate-700 mt-1">
-                    <span>1 Hour</span>
-                    <span className="text-blue-900 font-bold">{hoursSpent} {hoursSpent === 1 ? 'Hour' : 'Hours'}</span>
-                    <span>8 Hours</span>
-                  </div>
-                </div>
+            {/* Col 4: Join Us / Socials & Book Now Button */}
+            <div>
+              <p className="text-xs font-mono uppercase tracking-[0.18em] text-white font-semibold mb-5">
+                JOIN US
+              </p>
+              
+              {/* Social Icons */}
+              <div className="flex items-center gap-3 mb-6">
+                <a href="#" className="w-9 h-9 rounded-full bg-white/[0.05] border border-white/[0.1] flex items-center justify-center text-slate-300 hover:text-white hover:bg-white/[0.1] transition-all" aria-label="X">
+                  <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                  </svg>
+                </a>
+                <a href="#" className="w-9 h-9 rounded-full bg-white/[0.05] border border-white/[0.1] flex items-center justify-center text-slate-300 hover:text-white hover:bg-white/[0.1] transition-all" aria-label="Facebook">
+                  <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                  </svg>
+                </a>
+                <a href="#" className="w-9 h-9 rounded-full bg-white/[0.05] border border-white/[0.1] flex items-center justify-center text-slate-300 hover:text-white hover:bg-white/[0.1] transition-all" aria-label="Instagram">
+                  <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                  </svg>
+                </a>
+                <a href="#" className="w-9 h-9 rounded-full bg-white/[0.05] border border-white/[0.1] flex items-center justify-center text-slate-300 hover:text-white hover:bg-white/[0.1] transition-all" aria-label="Mail">
+                  <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                  </svg>
+                </a>
               </div>
 
-              <div className="bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 text-white p-8 rounded-2xl text-center shadow-xl border border-blue-900/30">
-                <span className="text-xs font-bold uppercase tracking-wider text-blue-300">Estimated Monthly Savings</span>
-                <div className="text-4xl md:text-5xl font-extrabold text-blue-400 my-4">₱ {monthlySavings.toLocaleString()}</div>
-                <p className="text-xs text-slate-300 mb-6">Based on standard administrative wage benchmarks.</p>
-                <button
-                  onClick={() => setIsModalOpen(true)}
-                  className="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3.5 rounded-xl transition-all text-sm shadow-md shadow-blue-600/30"
-                >
-                  Automate This System
-                </button>
-              </div>
+              {/* Book Now Button */}
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="w-full max-w-xs py-2.5 rounded-full text-xs font-semibold bg-white text-slate-950 hover:bg-slate-100 transition-colors cursor-pointer shadow-[0_0_20px_rgba(255,255,255,0.25)]"
+              >
+                Book Now
+              </button>
+            </div>
+
+          </div>
+
+          {/* Copyright */}
+          <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500">
+            <p>© 2026 Kinetix. All rights reserved.</p>
+            <div className="flex items-center gap-6 mt-4 sm:mt-0">
+              <a href="#" className="hover:text-slate-400">Privacy</a>
+              <a href="#" className="hover:text-slate-400">Terms</a>
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* Interactive FAQ Section */}
-      <FAQSection />
-
-      {/* Footer */}
-      <footer className="py-12 bg-white text-slate-500 text-sm border-t border-slate-200">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <span className="font-extrabold text-blue-900 lowercase">kinetix</span>
-            <span>© 2026. All rights reserved.</span>
-          </div>
-          <p className="text-xs text-slate-500">Enterprise AI & Workflow Automation Systems</p>
         </div>
       </footer>
 
-      {/* Modal / Booking Form */}
+      {/* BOOKING / AUDIT MODAL (Dark Theme Match) */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-2xl max-w-lg w-full p-8 shadow-2xl border border-slate-200 relative my-8">
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="relative w-full max-w-lg rounded-3xl bg-[#040816] border border-blue-500/30 p-8 shadow-[0_25px_80px_rgba(0,0,0,0.9),0_0_40px_rgba(37,99,235,0.2)] text-white animate-in fade-in zoom-in-95 duration-200">
+            
+            {/* Close Button */}
             <button
               onClick={() => setIsModalOpen(false)}
-              className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 font-bold text-lg"
+              className="absolute top-6 right-6 w-8 h-8 rounded-full bg-white/[0.06] border border-white/[0.1] flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/[0.12] transition-colors cursor-pointer"
             >
               ✕
             </button>
-            <h3 className="text-xl font-bold text-slate-950 mb-2">Book a Free Workflow Audit</h3>
-            <p className="text-sm text-slate-600 mb-6">Leave your details and our agency will analyze your business processes.</p>
-            
-            <form onSubmit={handleFormSubmit} className="space-y-4">
+
+            {/* Header */}
+            <div className="mb-6">
+              <h3 className="text-2xl font-bold tracking-tight text-white mb-2">
+                Book a Free Workflow Audit
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-400">
+                Leave your details and our agency will analyze your business processes.
+              </p>
+            </div>
+
+            {/* Form */}
+            <form onSubmit={(e) => { e.preventDefault(); alert('Audit Request Submitted!'); setIsModalOpen(false); }} className="space-y-4">
+              
               <div>
-                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Your Name</label>
-                <input 
-                  type="text" 
-                  name="name" 
-                  required 
-                  placeholder="John Doe" 
-                  className="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-900" 
+                <label className="block text-[11px] font-mono uppercase tracking-wider text-slate-400 mb-1.5">
+                  Your Name
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="John Doe"
+                  className="w-full bg-[#060D22] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-blue-500/80 focus:ring-1 focus:ring-blue-500/80 transition-all"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Business Email</label>
-                <input 
-                  type="email" 
-                  name="email" 
-                  required 
-                  placeholder="john@company.com" 
-                  className="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-900" 
+                <label className="block text-[11px] font-mono uppercase tracking-wider text-slate-400 mb-1.5">
+                  Business Email
+                </label>
+                <input
+                  type="email"
+                  required
+                  placeholder="john@company.com"
+                  className="w-full bg-[#060D22] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-blue-500/80 focus:ring-1 focus:ring-blue-500/80 transition-all"
                 />
               </div>
 
-              {/* Added Services Dropdown */}
               <div>
-                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Service Needed</label>
+                <label className="block text-[11px] font-mono uppercase tracking-wider text-slate-400 mb-1.5">
+                  Service Needed
+                </label>
                 <select
-                  value={selectedService}
-                  onChange={(e) => setSelectedService(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-900 bg-white"
+                  className="w-full bg-[#060D22] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500/80 focus:ring-1 focus:ring-blue-500/80 transition-all"
                 >
-                  <option value="Custom Web Apps & Client Portals">Custom Web Apps & Client Portals</option>
-                  <option value="Smart AI Workflow Engines">Smart AI Workflow Engines</option>
-                  <option value="API & Ecosystem Pipelines">API & Ecosystem Pipelines</option>
-                  <option value="Bespoke Enterprise Systems">Bespoke Enterprise Systems</option>
-                  <option value="Custom Service">Custom Service / Specific Workflow Request</option>
+                  <option className="bg-[#040816]">Custom Web Apps & Client Portals</option>
+                  <option className="bg-[#040816]">Smart AI Workflow Engines</option>
+                  <option className="bg-[#040816]">API & Ecosystem Pipelines</option>
+                  <option className="bg-[#040816]">Bespoke Enterprise Systems</option>
+                  <option className="bg-[#040816]">Custom Service / Specific Workflow Request</option>
                 </select>
               </div>
 
-              {/* Conditional Custom Service Input */}
-              {selectedService === "Custom Service" && (
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Specify Custom Service</label>
-                  <input 
-                    type="text" 
-                    value={customService}
-                    onChange={(e) => setCustomService(e.target.value)}
-                    required 
-                    placeholder="e.g. Automated PDF Generator + WhatsApp Notification" 
-                    className="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-900" 
-                  />
-                </div>
-              )}
-
-              {/* Added Project Vision / Concerns Textarea */}
               <div>
-                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Project Vision & Current Bottlenecks</label>
-                <textarea 
-                  name="concernsAndVision" 
+                <label className="block text-[11px] font-mono uppercase tracking-wider text-slate-400 mb-1.5">
+                  Project Vision & Current Bottlenecks
+                </label>
+                <textarea
                   rows={3}
-                  required 
-                  placeholder="Describe your current manual process, goals, or concerns..." 
-                  className="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-900 resize-none" 
+                  required
+                  placeholder="Describe your current manual process, goals, or concerns..."
+                  className="w-full bg-[#060D22] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-blue-500/80 focus:ring-1 focus:ring-blue-500/80 transition-all resize-none"
                 />
               </div>
 
-              <button type="submit" className="w-full bg-blue-950 hover:bg-blue-900 text-white font-semibold py-3.5 rounded-xl text-sm transition-all shadow-md">
+              <button
+                type="submit"
+                className="w-full mt-2 py-3.5 rounded-full text-sm font-semibold text-white bg-gradient-to-b from-[#60A5FA] to-[#2563EB] hover:from-[#93C5FD] hover:to-[#3B82F6] shadow-[0_0_25px_rgba(59,130,246,0.4),inset_0_1px_1px_rgba(255,255,255,0.4)] transition-all duration-300 cursor-pointer"
+              >
                 Submit Detailed Audit Request
               </button>
+
             </form>
+
           </div>
         </div>
       )}
-    </main>
+
+    </div>
   );
 }

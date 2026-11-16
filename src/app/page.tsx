@@ -135,7 +135,7 @@ const SECURITY_ITEMS = [
   {
     number: '(02)',
     title: 'Zero-Trust Architecture',
-    description: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',
+    description: 'Every API call, webhook, and user session is continuously verified with strict identity and least-privilege access controls.',
   },
   {
     number: '(03)',
@@ -566,7 +566,7 @@ export default function KinetixLandingPage() {
           
           <div className="mb-14">
             <h2 className="text-2xl sm:text-3xl font-medium tracking-tight text-white/90">
-              Table Content Overview
+              Security Content Overview
             </h2>
           </div>
 
@@ -609,7 +609,7 @@ export default function KinetixLandingPage() {
 
               <div className="flex items-center justify-between pt-12 mt-2 text-sm text-slate-400 font-light">
                 <span>[Technology]</span>
-                <span>[Modern Company]</span>
+                <span>[AI Automation Agency]</span>
               </div>
             </div>
 

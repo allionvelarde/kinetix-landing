@@ -172,6 +172,48 @@ export default function KinetixLandingPage() {
   const [activeSecurity, setActiveSecurity] = useState<number>(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // Form states added for Make.com webhook integration
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    service: 'Custom Web Apps & Client Portals',
+    vision: '',
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch('https://hook.us2.make.com/vtffyl9ir78uclry3cdhx1a4ptvdim27', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        alert('Audit Request Submitted Successfully!');
+        setFormData({
+          name: '',
+          email: '',
+          service: 'Custom Web Apps & Client Portals',
+          vision: '',
+        });
+        setIsModalOpen(false);
+      } else {
+        alert('May problema sa pag-send. Subukan ulit.');
+      }
+    } catch (error) {
+      console.error('Webhook error:', error);
+      alert('Hindi ma-connect sa server.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   useEffect(() => {
     const sections = ['Home', 'Solutions', 'Security', 'Process'] as const;
 
@@ -848,7 +890,7 @@ export default function KinetixLandingPage() {
             </div>
 
             {/* Form */}
-            <form onSubmit={(e) => { e.preventDefault(); alert('Audit Request Submitted!'); setIsModalOpen(false); }} className="space-y-4">
+            <form onSubmit={handleFormSubmit} className="space-y-4">
               
               <div>
                 <label className="block text-[11px] font-mono uppercase tracking-wider text-slate-400 mb-1.5">
@@ -857,6 +899,8 @@ export default function KinetixLandingPage() {
                 <input
                   type="text"
                   required
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="John Doe"
                   className="w-full bg-[#060D22] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-blue-500/80 focus:ring-1 focus:ring-blue-500/80 transition-all"
                 />
@@ -869,6 +913,8 @@ export default function KinetixLandingPage() {
                 <input
                   type="email"
                   required
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   placeholder="john@company.com"
                   className="w-full bg-[#060D22] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-blue-500/80 focus:ring-1 focus:ring-blue-500/80 transition-all"
                 />
@@ -879,6 +925,8 @@ export default function KinetixLandingPage() {
                   Service Needed
                 </label>
                 <select
+                  value={formData.service}
+                  onChange={(e) => setFormData({ ...formData, service: e.target.value })}
                   className="w-full bg-[#060D22] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500/80 focus:ring-1 focus:ring-blue-500/80 transition-all"
                 >
                   <option className="bg-[#040816]">Custom Web Apps & Client Portals</option>
@@ -896,6 +944,8 @@ export default function KinetixLandingPage() {
                 <textarea
                   rows={3}
                   required
+                  value={formData.vision}
+                  onChange={(e) => setFormData({ ...formData, vision: e.target.value })}
                   placeholder="Describe your current manual process, goals, or concerns..."
                   className="w-full bg-[#060D22] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-blue-500/80 focus:ring-1 focus:ring-blue-500/80 transition-all resize-none"
                 />
@@ -903,9 +953,10 @@ export default function KinetixLandingPage() {
 
               <button
                 type="submit"
-                className="w-full mt-2 py-3.5 rounded-full text-sm font-semibold text-white bg-gradient-to-b from-[#60A5FA] to-[#2563EB] hover:from-[#93C5FD] hover:to-[#3B82F6] shadow-[0_0_25px_rgba(59,130,246,0.4),inset_0_1px_1px_rgba(255,255,255,0.4)] transition-all duration-300 cursor-pointer"
+                disabled={isSubmitting}
+                className="w-full mt-2 py-3.5 rounded-full text-sm font-semibold text-white bg-gradient-to-b from-[#60A5FA] to-[#2563EB] hover:from-[#93C5FD] hover:to-[#3B82F6] shadow-[0_0_25px_rgba(59,130,246,0.4),inset_0_1px_1px_rgba(255,255,255,0.4)] transition-all duration-300 cursor-pointer disabled:opacity-50"
               >
-                Submit Detailed Audit Request
+                {isSubmitting ? 'Submitting...' : 'Submit Detailed Audit Request'}
               </button>
 
             </form>

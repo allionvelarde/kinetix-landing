@@ -172,7 +172,6 @@ export default function KinetixLandingPage() {
   const [activeSecurity, setActiveSecurity] = useState<number>(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Form states added for Make.com webhook integration
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -191,7 +190,13 @@ export default function KinetixLandingPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          service: formData.service,
+          concernsAndVision: formData.vision, // Tugma sa Make variable mapping mo
+          submittedAt: new Date().toISOString(), // Nagpapadala na ng Date/Time
+        }),
       });
 
       if (response.ok) {

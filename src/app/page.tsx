@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
 
 const AI_STACK_BRANDS = [
   {
@@ -811,9 +812,9 @@ export default function KinetixLandingPage() {
                 RESOURCES
               </p>
               <ul className="space-y-3 text-sm text-slate-400">
-                <li><a href="#" className="hover:text-white transition-colors">Terms of Use</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Refund Policy</a></li>
+                <li><Link href="/terms" className="hover:text-white transition-colors">Terms of Use</Link></li>
+                <li><Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
+                <li><Link href="/refund-policy" className="hover:text-white transition-colors">Refund Policy</Link></li>
               </ul>
             </div>
 
@@ -862,8 +863,8 @@ export default function KinetixLandingPage() {
           <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500">
             <p>© 2026 Kinetix. All rights reserved.</p>
             <div className="flex items-center gap-6 mt-4 sm:mt-0">
-              <a href="#" className="hover:text-slate-400">Privacy</a>
-              <a href="#" className="hover:text-slate-400">Terms</a>
+              <Link href="/privacy" className="hover:text-slate-400">Privacy</Link>
+              <Link href="/terms" className="hover:text-slate-400">Terms</Link>
             </div>
           </div>
 

@@ -185,7 +185,7 @@ export default function KinetixLandingPage() {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch('https://hook.us2.make.com/vtffyl9ir78uclry3cdhx1a4ptvdim27', {
+      const response = await fetch('/api/audit', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -194,8 +194,7 @@ export default function KinetixLandingPage() {
           name: formData.name,
           email: formData.email,
           service: formData.service,
-          concernsAndVision: formData.vision, // Tugma sa Make variable mapping mo
-          submittedAt: new Date().toISOString(), // Nagpapadala na ng Date/Time
+          vision: formData.vision,
         }),
       });
 
@@ -212,7 +211,7 @@ export default function KinetixLandingPage() {
         alert('May problema sa pag-send. Subukan ulit.');
       }
     } catch (error) {
-      console.error('Webhook error:', error);
+      console.error('API route error:', error);
       alert('Hindi ma-connect sa server.');
     } finally {
       setIsSubmitting(false);

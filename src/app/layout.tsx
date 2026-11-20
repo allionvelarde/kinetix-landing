@@ -9,8 +9,44 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.kinetixautomations.online"),
   title: "kinetix | Enterprise AI & Workflow Automation",
-  description: "Custom end-to-end AI automation engines for scaling businesses.",
+  description:
+    "Custom end-to-end AI automation engines, custom web systems, and automated booking & lead pipelines for scaling businesses.",
+  keywords: [
+    "AI automation agency Philippines",
+    "workflow automation",
+    "custom web systems",
+    "booking system automation",
+    "Kinetix Automations",
+  ],
+  alternates: {
+    canonical: "https://www.kinetixautomations.online",
+  },
+  openGraph: {
+    title: "kinetix | Enterprise AI & Workflow Automation",
+    description:
+      "Custom end-to-end AI automation engines and web systems built to eliminate manual bottlenecks.",
+    url: "https://www.kinetixautomations.online",
+    siteName: "Kinetix Automations",
+    images: [
+      {
+        url: "/kinetix_glass_card.png",
+        width: 1200,
+        height: 630,
+        alt: "Kinetix Automations",
+      },
+    ],
+    locale: "en_PH",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "kinetix | Enterprise AI & Workflow Automation",
+    description:
+      "Custom end-to-end AI automation engines and web systems built to eliminate manual bottlenecks.",
+    images: ["/kinetix_glass_card.png"],
+  },
 };
 
 export default function RootLayout({
